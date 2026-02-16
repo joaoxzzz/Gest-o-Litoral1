@@ -9,7 +9,7 @@ const app = express();
 // Configurações
 app.use(cors());
 app.use(express.json());
-// Esta linha faz o servidor entregar seu HTML/CSS (Front-end)
+// Serve os arquivos HTML/CSS/JS da pasta atual
 app.use(express.static(__dirname));
 
 // --- CONEXÃO COM O NEON (POSTGRES) ---
@@ -21,7 +21,6 @@ const pool = new Pool({
 });
 
 // --- CRIAÇÃO AUTOMÁTICA DAS TABELAS ---
-// Isso roda assim que o servidor liga para garantir que o banco existe
 async function iniciarBanco() {
     try {
         await pool.query(`
@@ -51,57 +50,45 @@ async function iniciarBanco() {
 }
 iniciarBanco();
 
-// ================= ROTAS =================
-
-// --- ROTA DE CADASTRO (Cria usuário no Banco) ---
+// --- ROTA DE CADASTRO ---
 app.post('/cadastrar', async (req, res) => {
     const { nome, usuario, senha } = req.body;
     try {
-        // Verifica se já existe
         const userCheck = await pool.query('SELECT * FROM usuarios WHERE usuario = $1', [usuario]);
         if (userCheck.rows.length > 0) {
             return res.status(400).json({ message: "Usuário já existe" });
         }
-
-        // Criptografa a senha (Segurança)
         const senhaHash = await bcrypt.hash(senha, 10);
-        
         await pool.query(
             'INSERT INTO usuarios (nome, usuario, senha) VALUES ($1, $2, $3)',
             [nome, usuario, senhaHash]
         );
         res.status(201).json({ message: "Usuário criado com sucesso!" });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: "Erro ao cadastrar" });
     }
 });
 
-// --- ROTA DE LOGIN (Verifica no Banco) ---
+// --- ROTA DE LOGIN ---
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body;
     try {
         const resultado = await pool.query('SELECT * FROM usuarios WHERE usuario = $1', [usuario]);
-        
         if (resultado.rows.length === 0) {
             return res.status(400).json({ message: "Usuário não encontrado" });
         }
-
         const user = resultado.rows[0];
         const senhaValida = await bcrypt.compare(senha, user.senha);
-
         if (!senhaValida) {
             return res.status(400).json({ message: "Senha incorreta" });
         }
-
         res.status(200).json({ message: "Login realizado com sucesso!", nome: user.nome });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: "Erro no servidor" });
     }
 });
 
-// --- ROTA: LISTAR CLIENTES ---
+// --- ROTAS DE CLIENTES ---
 app.get('/api/clientes', async (req, res) => {
     try {
         const resultado = await pool.query('SELECT * FROM clientes ORDER BY id DESC');
@@ -111,7 +98,6 @@ app.get('/api/clientes', async (req, res) => {
     }
 });
 
-// --- ROTA: SALVAR CLIENTE ---
 app.post('/api/clientes', async (req, res) => {
     const { nome, documento, telefone, email, endereco, cidade, cep, tipo } = req.body;
     try {
@@ -122,31 +108,25 @@ app.post('/api/clientes', async (req, res) => {
         );
         res.status(201).json({ message: "Cliente salvo!" });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: "Erro ao salvar cliente" });
     }
 });
 
-// --- ROTA: DELETAR CLIENTE ---
 app.delete('/api/clientes/:id', async (req, res) => {
-    const { id } = req.params;
     try {
-        await pool.query('DELETE FROM clientes WHERE id = $1', [id]);
+        await pool.query('DELETE FROM clientes WHERE id = $1', [req.params.id]);
         res.status(200).json({ message: "Cliente excluído" });
     } catch (err) {
         res.status(500).json({ error: "Erro ao excluir" });
     }
 });
 
-// --- ROTA: EDITAR CLIENTE ---
 app.put('/api/clientes/:id', async (req, res) => {
-    const { id } = req.params;
     const { nome, documento, telefone, email, cidade } = req.body;
     try {
         await pool.query(
-            `UPDATE clientes SET nome=$1, documento=$2, telefone=$3, email=$4, cidade=$5 
-             WHERE id=$6`,
-            [nome, documento, telefone, email, cidade, id]
+            `UPDATE clientes SET nome=$1, documento=$2, telefone=$3, email=$4, cidade=$5 WHERE id=$6`,
+            [nome, documento, telefone, email, cidade, req.params.id]
         );
         res.status(200).json({ message: "Cliente atualizado" });
     } catch (err) {
