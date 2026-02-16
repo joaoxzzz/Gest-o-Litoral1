@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="styles.css">
+    <title>Cadastro - Gestão Litoral</title>
+    <style>
+        body.form-only-body {
+            margin: 0;
+            background-color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .input-group { margin-bottom: 15px; }
+        .input-field { display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-top: 5px; }
+        .input-field input { background: transparent; border: none; color: white; outline: none; width: 100%; margin-left: 10px; }
+        .btn-primary { width: 100%; padding: 12px; background: #3b82f6; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .footer-text { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+        .footer-text a { color: #3b82f6; text-decoration: none; }
+    </style>
+</head>
+<body class="form-only-body">
+
+    <div class="form-container">
+        <h2 style="text-align: center; margin-bottom: 20px;">Crie sua Conta</h2>
+        <form id="formCadastro">
+            <div class="input-group">
+                <label>Nome Completo</label>
+                <div class="input-field">
+                    <i class='bx bxs-id-card'></i>
+                    <input type="text" id="nome" placeholder="Seu nome" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Usuário</label>
+                <div class="input-field">
+                    <i class='bx bxs-user'></i>
+                    <input type="text" id="usuario" placeholder="Escolha um usuário" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Senha</label>
+                <div class="input-field">
+                    <i class='bx bxs-lock-alt'></i>
+                    <input type="password" id="senha" placeholder="Sua senha" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Finalizar Cadastro</button>
+            <p class="footer-text">Já tem conta? <a href="index.html">Fazer Login</a></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('formCadastro');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const dados = {
+                nome: document.getElementById('nome').value,
+                usuario: document.getElementById('usuario').value,
+                senha: document.getElementById('senha').value
+            };
+
+            try {
+                // CORRIGIDO: Link relativo
+                const response = await fetch('/cadastrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("✅ " + data.message);
+                    window.location.href = 'index.html';
+                } else {
+                    alert("⚠️ " + data.message);
+                }
+            } catch (error) {
+                alert("Erro ao conectar com o servidor.");
+            }
+        });
+    </script>
+</body>
+</html>
