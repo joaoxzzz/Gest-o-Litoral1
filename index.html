@@ -14,84 +14,47 @@
                 <img src="excel_logo.png" alt="Logo Excel" class="company-logo">
                 <h1 class="brand-title">Gestão <span>Litoral</span></h1>
                 <p class="brand-subtitle">Gerencie seus imóveis com segurança e eficiência.</p>
-                
                 <div class="features-grid">
-                    <div class="feature-item">
-                        <i class='bx bx-shield-quarter'></i>
-                        <span>Segurança Inteligente</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class='bx bx-buildings'></i>
-                        <span>Automação Residencial</span>
-                    </div>
+                    <div class="feature-item"><i class='bx bx-shield-quarter'></i><span>Segurança Inteligente</span></div>
+                    <div class="feature-item"><i class='bx bx-buildings'></i><span>Automação Residencial</span></div>
                 </div>
             </div>
         </section>
-
         <section class="form-side">
             <div class="form-container">
                 <div class="form-header">
                     <h2>Bem-vindo de volta!</h2>
                     <p>Insira suas credenciais para acessar o painel.</p>
                 </div>
-
-                <form>
+                <form id="loginForm">
                     <div class="input-group">
                         <label>Usuário</label>
-                        <div class="input-field">
-                            <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Ex: admin" required>
-                        </div>
+                        <div class="input-field"><i class='bx bxs-user'></i><input type="text" id="user" required></div>
                     </div>
-
                     <div class="input-group">
                         <label>Senha</label>
-                        <div class="input-field">
-                            <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Sua senha" required>
-                        </div>
+                        <div class="input-field"><i class='bx bxs-lock-alt'></i><input type="password" id="pass" required></div>
                     </div>
-
                     <button type="submit" class="btn-primary">Entrar no Sistema</button>
-                    
                     <p class="footer-text">Não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
                 </form>
             </div>
         </section>
     </div>
-
     <script>
-        const form = document.querySelector('form');
-        
-        form.addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const usuarioInput = document.querySelector('input[type="text"]');
-            const senhaInput = document.querySelector('input[type="password"]');
-
-            try {
-                // CORRIGIDO: Link relativo para funcionar online
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        usuario: usuarioInput.value, 
-                        senha: senhaInput.value 
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Salva nome para usar no dashboard
-                    localStorage.setItem('usuarioNome', data.nome || 'Admin');
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert("❌ " + data.message);
-                }
-            } catch (error) {
-                console.error(error);
-                alert("Erro: Não foi possível conectar ao servidor.");
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario: document.getElementById('user').value, senha: document.getElementById('pass').value })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('usuarioNome', data.nome || 'Admin');
+                window.location.href = 'dashboard.html';
+            } else {
+                alert("❌ " + data.message);
             }
         });
     </script>
