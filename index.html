@@ -3,43 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gestão Litoral</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="styles.css">
-    <title>Gestão Litoral - Login</title>
 </head>
-<body>
-    <div class="main-wrapper">
-        <section class="branding-side">
-            <div class="branding-content">
-                <img src="excel_logo.png" alt="Logo Excel" class="company-logo">
-                <h1 class="brand-title">Gestão <span>Litoral</span></h1>
-                <p class="brand-subtitle">Gerencie seus imóveis com segurança e eficiência.</p>
-                <div class="features-grid">
-                    <div class="feature-item"><i class='bx bx-shield-quarter'></i><span>Segurança Inteligente</span></div>
-                    <div class="feature-item"><i class='bx bx-buildings'></i><span>Automação Residencial</span></div>
-                </div>
+<body class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-brand">
+            <img src="excel_logo.png" alt="Excel Logo" style="width: 100px; margin-bottom: 20px;">
+            <h1>Gestão <span>Litoral</span></h1>
+            <p style="color: #94a3b8; font-size: 1.1rem; max-width: 400px;">Gerencie seus imóveis com segurança e eficiência máxima.</p>
+            <div class="feature-boxes">
+                <div class="f-box"><i class='bx bx-shield-quarter'></i><span>Segurança</span></div>
+                <div class="f-box"><i class='bx bx-home-smile'></i><span>Automação</span></div>
+                <div class="f-box"><i class='bx bx-lock-open-alt'></i><span>Acesso</span></div>
             </div>
-        </section>
-        <section class="form-side">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2>Bem-vindo de volta!</h2>
-                    <p>Insira suas credenciais para acessar o painel.</p>
-                </div>
+        </div>
+
+        <div class="auth-form-side">
+            <div class="form-box">
+                <h2 style="color: white; margin-bottom: 10px; font-size: 1.8rem;">Acessar Conta</h2>
+                <p style="color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem;">Bem-vindo de volta! Insira seus dados.</p>
                 <form id="loginForm">
-                    <div class="input-group">
-                        <label>Usuário</label>
-                        <div class="input-field"><i class='bx bxs-user'></i><input type="text" id="user" required></div>
-                    </div>
-                    <div class="input-group">
-                        <label>Senha</label>
-                        <div class="input-field"><i class='bx bxs-lock-alt'></i><input type="password" id="pass" required></div>
-                    </div>
-                    <button type="submit" class="btn-primary">Entrar no Sistema</button>
-                    <p class="footer-text">Não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
+                    <label style="color:#cbd5e1; font-size:0.9rem; margin-left:15px;">Usuário</label>
+                    <div class="input-pill"><i class='bx bxs-user'></i><input type="text" id="user" placeholder="Digite seu usuário" required></div>
+                    <label style="color:#cbd5e1; font-size:0.9rem; margin-left:15px;">Senha</label>
+                    <div class="input-pill"><i class='bx bxs-lock-alt'></i><input type="password" id="pass" placeholder="Digite sua senha" required></div>
+                    <button type="submit" class="btn-auth">Acessar minha conta</button>
+                    <p class="auth-footer">Não tem uma conta? <a href="cadastro.html">Cadastre-se agora!</a></p>
                 </form>
             </div>
-        </section>
+        </div>
     </div>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -49,13 +43,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ usuario: document.getElementById('user').value, senha: document.getElementById('pass').value })
             });
-            const data = await response.json();
-            if (response.ok) {
-                localStorage.setItem('usuarioNome', data.nome || 'Admin');
-                window.location.href = 'dashboard.html';
-            } else {
-                alert("❌ " + data.message);
-            }
+            if (response.ok) { window.location.href = 'dashboard.html'; } else { alert("❌ Login Inválido"); }
         });
     </script>
 </body>
