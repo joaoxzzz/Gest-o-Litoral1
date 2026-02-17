@@ -2,153 +2,69 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - EXCEL ERP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestão</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <aside class="sidebar">
         <div>
             <div class="logo-container">
                 <div class="logo-box">EX</div>
-                <div>
-                    <h3 style="color:white; font-size: 1rem;">EXCEL</h3>
-                    <span style="font-size: 0.7rem; color: #94a3b8;">Chaveiro & Segurança</span>
-                </div>
+                <div><h3 style="color:white; font-size: 1rem;">EXCEL</h3><span style="font-size: 0.7rem; color: #94a3b8;">Chaveiro & Segurança</span></div>
             </div>
-
             <div class="nav-menu">
-                <a href="#" class="nav-item active" onclick="navegar('dashboard', this)">
-                    <i class='bx bxs-dashboard'></i> <span>Dashboard</span>
-                </a>
-
+                <a href="#" class="nav-item active" onclick="navegar('dashboard', this)"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a>
                 <div class="menu-category">Cadastros</div>
-                <a href="#" class="nav-item" onclick="navegar('clientes', this)">
-                    <i class='bx bx-user'></i> <span>Clientes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class='bx bx-store'></i> <span>Fornecedores</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class='bx bx-id-card'></i> <span>Funcionários</span>
-                </a>
-
-                <div class="menu-category">Gestão</div>
-                <a href="#" class="nav-item"><i class='bx bx-box'></i> <span>Produtos</span></a>
-                <a href="#" class="nav-item"><i class='bx bx-cart'></i> <span>Compras</span></a>
-                <a href="#" class="nav-item"><i class='bx bx-wrench'></i> <span>Ordens de Serviço</span></a>
-                <a href="#" class="nav-item"><i class='bx bx-wallet'></i> <span>Financeiro</span></a>
+                <a href="#" class="nav-item" onclick="navegar('clientes', this)"><i class='bx bx-user'></i> <span>Clientes</span></a>
             </div>
         </div>
-
         <div class="user-profile">
             <div class="avatar-circle">JN</div>
-            <div style="flex: 1;">
-                <h4 style="color: white; font-size: 0.9rem;">João Neto</h4>
-                <p style="font-size: 0.75rem; color: #94a3b8;">joao@email.com</p>
-            </div>
-            <i class='bx bx-log-out' style="cursor: pointer; font-size: 1.2rem;" onclick="logout()"></i>
+            <div style="flex: 1;"><h4 style="color: white; font-size: 0.9rem;">Usuário</h4><p style="font-size: 0.75rem; color: #94a3b8;">Logado</p></div>
+            <i class='bx bx-log-out' style="cursor: pointer; font-size: 1.2rem;" onclick="window.location.href='index.html'"></i>
         </div>
     </aside>
 
     <main class="main-content">
-        
         <section id="view-dashboard">
-            <div class="header-title">
-                <h1>Dashboard</h1>
-                <p>Visão geral do sistema</p>
-            </div>
-
+            <div class="header-title"><h1>Dashboard</h1><p>Visão geral do sistema</p></div>
             <div class="kpi-grid">
-                <div class="card">
-                    <div class="icon-box-green"><i class='bx bx-dollar'></i></div>
-                    <div class="card-label">Faturamento</div>
-                    <div class="card-value">R$ 45.000</div>
-                </div>
-                <div class="card">
-                    <div class="card-label">OS Abertas</div>
-                    <div class="card-value">12</div>
-                </div>
-                <div class="card">
-                    <div class="card-label">Clientes</div>
-                    <div class="card-value" id="total-clientes-dash">0</div>
-                </div>
-                <div class="card">
-                    <div class="card-label">Estoque</div>
-                    <div class="card-value">0</div>
-                </div>
+                <div class="card"><div class="icon-box-green"><i class='bx bx-dollar'></i></div><div class="card-label">Faturamento</div><div class="card-value">R$ 45k</div></div>
+                <div class="card"><div class="card-label">Clientes</div><div class="card-value" id="total-clientes-dash">0</div></div>
             </div>
-
             <div class="charts-grid">
-                <div class="chart-container">
-                    <h3 style="margin-bottom: 20px; font-size: 1rem;">Faturamento Mensal</h3>
-                    <canvas id="lineChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h3 style="margin-bottom: 20px; font-size: 1rem;">Serviços</h3>
-                    <div style="height: 200px; display: flex; justify-content: center;">
-                        <canvas id="doughnutChart"></canvas>
-                    </div>
-                </div>
+                <div class="chart-container"><h3>Faturamento</h3><canvas id="lineChart"></canvas></div>
+                <div class="chart-container"><h3>Serviços</h3><div style="height:200px; display:flex; justify-content:center;"><canvas id="doughnutChart"></canvas></div></div>
             </div>
         </section>
 
         <section id="view-clientes" style="display: none;">
-            <div class="header-title">
-                <h1>Clientes</h1>
-                <p id="total-clientes-subtitle">0 clientes cadastrados</p>
-            </div>
-
+            <div class="header-title"><h1>Clientes</h1><p>Gestão de base</p></div>
             <div class="toolbar">
-                <div class="filter-tabs">
-                    <button class="tab-btn active">Todos</button>
-                    <button class="tab-btn">Pessoa Física</button>
-                    <button class="tab-btn">Pessoa Jurídica</button>
-                </div>
+                <div class="filter-tabs"><button class="tab-btn active">Todos</button></div>
                 <div style="display: flex; gap: 15px;">
-                    <div class="search-bar">
-                        <i class='bx bx-search' style="color: #94a3b8;"></i>
-                        <input type="text" placeholder="Buscar por nome, CPF/CNPJ...">
-                    </div>
-                    <button class="btn-new" onclick="abrirModal()">
-                        <i class='bx bx-plus'></i> Novo Cliente
-                    </button>
+                    <button class="btn-new" onclick="document.getElementById('modal-cliente').style.display='flex'"><i class='bx bx-plus'></i> Novo Cliente</button>
                 </div>
             </div>
-
             <div class="table-container">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Contato</th>
-                            <th>Cidade</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-clientes-body">
-                        </tbody>
+                    <thead><tr><th>Nome</th><th>Contato</th><th>Cidade</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-clientes-body"></tbody>
                 </table>
             </div>
         </section>
-
     </main>
 
     <div id="modal-cliente" class="modal-overlay">
         <div class="modal-content">
             <h3>Novo Cliente</h3>
             <form id="formCli">
-                <input type="text" id="c_nome" class="form-input" placeholder="Nome Completo" required>
-                <input type="text" id="c_doc" class="form-input" placeholder="CPF ou CNPJ">
-                <input type="text" id="c_tel" class="form-input" placeholder="Telefone / WhatsApp">
-                <input type="text" id="c_cidade" class="form-input" placeholder="Cidade">
-                
+                <input type="text" id="c_nome" class="form-input" placeholder="Nome" required>
+                <input type="text" id="c_doc" class="form-input" placeholder="Documento">
                 <div class="modal-actions">
-                    <button type="button" class="tab-btn" onclick="fecharModal()">Cancelar</button>
+                    <button type="button" class="tab-btn" onclick="document.getElementById('modal-cliente').style.display='none'">Cancelar</button>
                     <button type="submit" class="btn-new" style="background: var(--active-yellow); color: var(--sidebar-bg);">Salvar</button>
                 </div>
             </form>
@@ -156,152 +72,41 @@
     </div>
 
     <script>
-        // --- NAVEGAÇÃO ---
-        function navegar(tela, elemento) {
-            // Esconde todas as telas
+        function navegar(tela, el) {
             document.getElementById('view-dashboard').style.display = 'none';
             document.getElementById('view-clientes').style.display = 'none';
-            
-            // Remove classe active de todos os links
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-            // Mostra tela selecionada
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
             document.getElementById('view-' + tela).style.display = 'block';
-            
-            // Ativa o menu
-            if(elemento) elemento.classList.add('active');
-
+            if(el) el.classList.add('active');
             if(tela === 'clientes') carregarClientes();
         }
 
-        // --- INTEGRAÇÃO COM A API ---
         async function carregarClientes() {
-            try {
-                const res = await fetch('/api/clientes');
-                const clientes = await res.json();
-                
-                // Atualiza contadores
-                document.getElementById('total-clientes-dash').innerText = clientes.length;
-                document.getElementById('total-clientes-subtitle').innerText = `${clientes.length} clientes cadastrados`;
-
-                const tbody = document.getElementById('lista-clientes-body');
-                tbody.innerHTML = '';
-
-                clientes.forEach(c => {
-                    const iniciais = c.nome ? c.nome.substring(0,2).toUpperCase() : 'CLI';
-                    
-                    const row = `
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar-sm">${iniciais}</div>
-                                    <div>
-                                        <div style="font-weight: 600;">${c.nome}</div>
-                                        <div style="font-size: 0.75rem; color: #94a3b8;">${c.documento || 'Sem documento'}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div><i class='bx bx-phone'></i> ${c.telefone || '-'}</div>
-                                <div style="font-size: 0.75rem; color: #94a3b8;">${c.email || ''}</div>
-                            </td>
-                            <td>${c.cidade || '-'}</td>
-                            <td><span class="status-badge">Ativo</span></td>
-                            <td>
-                                <button class="action-btn"><i class='bx bx-edit'></i></button>
-                                <button class="action-btn delete" onclick="excluirCliente(${c.id})"><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-            } catch (error) {
-                console.error("Erro ao carregar clientes", error);
-            }
+            const res = await fetch('/api/clientes');
+            const clientes = await res.json();
+            document.getElementById('total-clientes-dash').innerText = clientes.length;
+            document.getElementById('lista-clientes-body').innerHTML = clientes.map(c => `
+                <tr>
+                    <td><div class="user-cell"><div class="user-avatar-sm">${c.nome.substring(0,2).toUpperCase()}</div><div><strong>${c.nome}</strong><br><small>${c.documento||''}</small></div></div></td>
+                    <td>${c.telefone||'-'}</td><td>${c.cidade||'-'}</td>
+                    <td><button class="action-btn delete" onclick="excluir(${c.id})"><i class='bx bx-trash'></i></button></td>
+                </tr>`).join('');
         }
-
-        // --- FORMULÁRIO ---
-        function abrirModal() { document.getElementById('modal-cliente').style.display = 'flex'; }
-        function fecharModal() { document.getElementById('modal-cliente').style.display = 'none'; }
 
         document.getElementById('formCli').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const dados = {
-                nome: document.getElementById('c_nome').value,
-                documento: document.getElementById('c_doc').value,
-                telefone: document.getElementById('c_tel').value,
-                cidade: document.getElementById('c_cidade').value,
-                tipo: 'Fisica' // Padrão por enquanto
-            };
-
-            await fetch('/api/clientes', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(dados)
-            });
-
-            fecharModal();
+            await fetch('/api/clientes', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ nome: document.getElementById('c_nome').value, documento: document.getElementById('c_doc').value }) });
+            document.getElementById('modal-cliente').style.display = 'none';
             carregarClientes();
-            document.getElementById('formCli').reset();
         });
 
-        async function excluirCliente(id) {
-            if(confirm('Tem certeza que deseja excluir?')) {
-                await fetch(`/api/clientes/${id}`, { method: 'DELETE' });
-                carregarClientes();
-            }
-        }
+        async function excluir(id) { if(confirm("Excluir?")) { await fetch(`/api/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
 
-        function logout() {
-            window.location.href = 'index.html';
-        }
-
-        // --- GRÁFICOS (CHART.JS) ---
         window.onload = () => {
-            carregarClientes(); // Carrega contadores iniciais
-
-            // Gráfico de Linha Curva (Igual print)
-            new Chart(document.getElementById('lineChart'), {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai'],
-                    datasets: [{
-                        label: 'Faturamento',
-                        data: [15000, 32000, 21000, 28000, 45000],
-                        borderColor: '#1e3a8a', // Azul escuro
-                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
-                        tension: 0.4, // Deixa a linha curva
-                        pointRadius: 3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { display: false } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-
-            // Gráfico de Rosca (Igual print)
-            new Chart(document.getElementById('doughnutChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Chaveiro', 'Alarmes'],
-                    datasets: [{
-                        data: [75, 25],
-                        backgroundColor: ['#1e3a8a', '#fbbf24'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    cutout: '70%', // Rosca fina
-                    plugins: { legend: { position: 'right' } }
-                }
-            });
-        };
+            carregarClientes();
+            new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar'], datasets: [{ label: 'R$', data: [15,30,45], borderColor: '#1e3a8a', tension: 0.4, fill: true }] } });
+            new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['A','B'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] } });
+        }
     </script>
 </body>
 </html>
