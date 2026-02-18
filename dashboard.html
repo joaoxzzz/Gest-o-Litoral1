@@ -41,17 +41,39 @@
         </section>
 
         <section id="view-clientes" style="display: none;">
-            <div class="header-title"><h1>Clientes</h1><p>Gestão de base</p></div>
+            <div class="header-title"><h1>Clientes</h1><p id="total-clientes-sub">Gestão de base</p></div>
+            
             <div class="toolbar">
-                <div class="filter-tabs"><button class="tab-btn active">Todos</button></div>
-                <div style="display: flex; gap: 15px;">
-                    <button class="btn-new" onclick="document.getElementById('modal-cliente').style.display='flex'"><i class='bx bx-plus'></i> Novo Cliente</button>
+                <div class="filter-tabs">
+                    <button class="tab-btn active">Todos</button>
+                    <button class="tab-btn">Pessoa Física</button>
+                    <button class="tab-btn">Pessoa Jurídica</button>
                 </div>
             </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="search-bar">
+                    <i class='bx bx-search' style="color: #94a3b8;"></i>
+                    <input type="text" placeholder="Buscar por nome, CPF/CNPJ ou email...">
+                </div>
+                <button class="btn-new" onclick="abrirModal()">
+                    <i class='bx bx-plus'></i> Novo Cliente
+                </button>
+            </div>
+
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Nome</th><th>Contato</th><th>Cidade</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-clientes-body"></tbody>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Contato</th>
+                            <th>Cidade</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-clientes-body">
+                        </tbody>
                 </table>
             </div>
         </section>
@@ -59,13 +81,83 @@
 
     <div id="modal-cliente" class="modal-overlay">
         <div class="modal-content">
-            <h3>Novo Cliente</h3>
+            <div class="modal-header">
+                <h3>Novo Cliente</h3>
+                <i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal()"></i>
+            </div>
             <form id="formCli">
-                <input type="text" id="c_nome" class="form-input" placeholder="Nome" required>
-                <input type="text" id="c_doc" class="form-input" placeholder="Documento">
-                <div class="modal-actions">
-                    <button type="button" class="tab-btn" onclick="document.getElementById('modal-cliente').style.display='none'">Cancelar</button>
-                    <button type="submit" class="btn-new" style="background: var(--active-yellow); color: var(--sidebar-bg);">Salvar</button>
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="c_tipo" class="form-select">
+                                <option value="Fisica">Pessoa Física</option>
+                                <option value="Juridica">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="c_status" class="form-select">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label>Nome / Razão Social *</label>
+                            <input type="text" id="c_nome" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>CPF / CNPJ</label>
+                            <input type="text" id="c_doc" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>RG / IE</label>
+                            <input type="text" id="c_rg" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="c_email" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" id="c_tel" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>WhatsApp</label>
+                            <input type="text" id="c_whats" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Endereço</label>
+                            <input type="text" id="c_end" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cidade</label>
+                            <input type="text" id="c_cidade" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <input type="text" id="c_uf" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>CEP</label>
+                            <input type="text" id="c_cep" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Observações</label>
+                            <textarea id="c_obs" class="form-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-save">Cadastrar</button>
                 </div>
             </form>
         </div>
@@ -81,31 +173,99 @@
             if(tela === 'clientes') carregarClientes();
         }
 
+        function abrirModal() { document.getElementById('modal-cliente').style.display = 'flex'; }
+        function fecharModal() { document.getElementById('modal-cliente').style.display = 'none'; }
+
         async function carregarClientes() {
-            const res = await fetch('/api/clientes');
-            const clientes = await res.json();
-            document.getElementById('total-clientes-dash').innerText = clientes.length;
-            document.getElementById('lista-clientes-body').innerHTML = clientes.map(c => `
-                <tr>
-                    <td><div class="user-cell"><div class="user-avatar-sm">${c.nome.substring(0,2).toUpperCase()}</div><div><strong>${c.nome}</strong><br><small>${c.documento||''}</small></div></div></td>
-                    <td>${c.telefone||'-'}</td><td>${c.cidade||'-'}</td>
-                    <td><button class="action-btn delete" onclick="excluir(${c.id})"><i class='bx bx-trash'></i></button></td>
-                </tr>`).join('');
+            try {
+                const res = await fetch('/api/clientes');
+                const clientes = await res.json();
+                
+                document.getElementById('total-clientes-dash').innerText = clientes.length;
+                document.getElementById('total-clientes-sub').innerText = `${clientes.length} clientes cadastrados`;
+
+                const tbody = document.getElementById('lista-clientes-body');
+                tbody.innerHTML = clientes.map(c => {
+                    // Lógica para definir o ícone baseado no tipo
+                    const isJuridica = c.tipo === 'Juridica';
+                    const iconClass = isJuridica ? 'bx-building' : 'bx-user';
+                    const colorClass = isJuridica ? 'icon-business' : 'icon-person';
+                    const contatoIcon = c.telefone ? `<i class='bx bx-phone'></i> ${c.telefone}` : '-';
+
+                    return `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="client-icon-box ${colorClass}">
+                                    <i class='bx ${iconClass}'></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: #1e293b;">${c.nome}</div>
+                                    <div style="font-size: 0.75rem; color: #94a3b8;">${c.documento || 'Sem documento'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem; margin-bottom: 2px;">${contatoIcon}</div>
+                            <div style="font-size: 0.8rem; color: #64748b;">${c.email || ''}</div>
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:5px; color:#64748b;">
+                                <i class='bx bx-map-pin'></i> ${c.cidade || '-'}
+                            </div>
+                        </td>
+                        <td><span class="status-badge">${c.status || 'Ativo'}</span></td>
+                        <td>
+                            <button class="action-btn"><i class='bx bx-edit-alt'></i></button>
+                            <button class="action-btn" onclick="excluir(${c.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } catch (error) { console.error(error); }
         }
 
         document.getElementById('formCli').addEventListener('submit', async (e) => {
             e.preventDefault();
-            await fetch('/api/clientes', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ nome: document.getElementById('c_nome').value, documento: document.getElementById('c_doc').value }) });
-            document.getElementById('modal-cliente').style.display = 'none';
+            
+            const dados = {
+                tipo: document.getElementById('c_tipo').value,
+                status: document.getElementById('c_status').value,
+                nome: document.getElementById('c_nome').value,
+                documento: document.getElementById('c_doc').value,
+                rg_ie: document.getElementById('c_rg').value,
+                email: document.getElementById('c_email').value,
+                telefone: document.getElementById('c_tel').value,
+                whatsapp: document.getElementById('c_whats').value,
+                endereco: document.getElementById('c_end').value,
+                cidade: document.getElementById('c_cidade').value,
+                estado: document.getElementById('c_uf').value,
+                cep: document.getElementById('c_cep').value,
+                observacoes: document.getElementById('c_obs').value
+            };
+
+            await fetch('/api/clientes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dados)
+            });
+
+            fecharModal();
             carregarClientes();
+            document.getElementById('formCli').reset();
         });
 
-        async function excluir(id) { if(confirm("Excluir?")) { await fetch(`/api/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
+        async function excluir(id) { 
+            if(confirm("Deseja realmente excluir este cliente?")) { 
+                await fetch(`/api/clientes/${id}`, { method: 'DELETE' }); 
+                carregarClientes(); 
+            } 
+        }
 
         window.onload = () => {
             carregarClientes();
-            new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar'], datasets: [{ label: 'R$', data: [15,30,45], borderColor: '#1e3a8a', tension: 0.4, fill: true }] } });
-            new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['A','B'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] } });
+            // Gráficos (Mantidos)
+            new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar','Abr','Mai'], datasets: [{ label: 'R$', data: [15,30,12,20,45], borderColor: '#1e3a8a', tension: 0.4, fill: false }] } });
+            new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['Chaveiro','Alarmes'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] }, options: { cutout: '70%' } });
         }
     </script>
 </body>
