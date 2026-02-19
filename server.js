@@ -18,8 +18,6 @@ const pool = new Pool({
 // Inicializa Tabelas
 async function iniciarBanco() {
     try {
-        // 1. Apaga a tabela antiga para evitar conflitos (Reseta os dados de teste)
-        await pool.query('DROP TABLE IF EXISTS clientes;'); 
         
         // 2. Cria as tabelas com todas as colunas novas
         await pool.query(`
@@ -43,7 +41,7 @@ async function iniciarBanco() {
                 observacoes TEXT
             );
         `);
-        console.log("✅ Banco de Dados Resetado e Atualizado com Sucesso no Render!");
+        console.log("✅ Banco de Dados Conectado com Sucesso!");
     } catch (err) { 
         console.error("❌ Erro no Banco:", err); 
     }
