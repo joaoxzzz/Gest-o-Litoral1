@@ -19,26 +19,48 @@
                 </div>
                 <div style="text-align:left; margin-bottom:15px;">
                     <label style="color:#cbd5e1; font-size:0.9rem; margin-left:15px;">Usuário</label>
-                    <div class="input-pill"><i class='bx bxs-user'></i><input type="text" id="usuario" placeholder="Usuario" required></div>
+                    <div class="input-pill"><i class='bx bxs-user'></i><input type="text" id="usuario" placeholder="Nome de usuário" required></div>
                 </div>
                 <div style="text-align:left; margin-bottom:25px;">
                     <label style="color:#cbd5e1; font-size:0.9rem; margin-left:15px;">Senha</label>
-                    <div class="input-pill"><i class='bx bxs-lock-alt'></i><input type="password" id="senha" placeholder="Senha" required></div>
+                    <div class="input-pill"><i class='bx bxs-lock-alt'></i><input type="password" id="senha" placeholder="Sua senha" required></div>
                 </div>
-                <button type="submit" class="btn-auth">Finalizar Cadastro</button>
+                <button type="submit" class="btn-auth" id="btn-cad">Finalizar Cadastro</button>
                 <p class="auth-footer">Já tem conta? <a href="index.html">Fazer Login</a></p>
             </form>
         </div>
     </div>
     <script>
+        const API_URL = 'https://gestao-litoral.onrender.com';
+
         document.getElementById('formCadastro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const res = await fetch('/cadastrar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome: document.getElementById('nome').value, usuario: document.getElementById('usuario').value, senha: document.getElementById('senha').value })
-            });
-            if (res.ok) { alert("✅ Criado!"); window.location.href = 'index.html'; } else { alert("Erro ao criar."); }
+            document.getElementById('btn-cad').innerText = "Salvando...";
+
+            try {
+                const res = await fetch(`${API_URL}/cadastrar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nome: document.getElementById('nome').value, 
+                        usuario: document.getElementById('usuario').value, 
+                        senha: document.getElementById('senha').value 
+                    })
+                });
+                
+                const data = await res.json();
+
+                if (res.ok) { 
+                    alert("✅ Conta criada! Faça login."); 
+                    window.location.href = 'index.html'; 
+                } else { 
+                    alert("⚠️ " + data.message); 
+                    document.getElementById('btn-cad').innerText = "Finalizar Cadastro";
+                }
+            } catch (err) {
+                alert("Erro ao conectar com o banco de dados no Render.");
+                document.getElementById('btn-cad').innerText = "Finalizar Cadastro";
+            }
         });
     </script>
 </body>
