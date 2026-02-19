@@ -269,6 +269,45 @@
             new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar','Abr','Mai'], datasets: [{ label: 'R$', data: [15,30,12,20,45], borderColor: '#1e3a8a', tension: 0.4, fill: false }] } });
             new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['Chaveiro','Alarmes'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] }, options: { cutout: '70%' } });
         }
+        // --- MÁSCARAS DE FORMATAÇÃO (Adicione no final do seu <script>) ---
+        
+        // Máscara para CPF e CNPJ
+        document.getElementById('c_doc').addEventListener('input', function(e) {
+            let v = e.target.value.replace(/\D/g,""); // Remove o que não é número
+            if(v.length <= 11) {
+                // Formata CPF
+                v = v.replace(/(\d{3})(\d)/,"$1.$2");
+                v = v.replace(/(\d{3})(\d)/,"$1.$2");
+                v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+            } else {
+                // Formata CNPJ
+                v = v.replace(/^(\d{2})(\d)/,"$1.$2");
+                v = v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3");
+                v = v.replace(/\.(\d{3})(\d)/,".$1/$2");
+                v = v.replace(/(\d{4})(\d)/,"$1-$2");
+            }
+            e.target.value = v;
+        });
+
+        // Função para formatar Telefone/WhatsApp
+        const mascaraTelefone = (e) => {
+            let v = e.target.value.replace(/\D/g,"");
+            v = v.replace(/^(\d{2})(\d)/g,"($1) $2");
+            v = v.replace(/(\d)(\d{4})$/,"$1-$2");
+            e.target.value = v;
+        };
+
+        // Aplica a máscara nos campos de telefone
+        document.getElementById('c_tel').addEventListener('input', mascaraTelefone);
+        document.getElementById('c_whats').addEventListener('input', mascaraTelefone);
+        
+        // Máscara para CEP
+        document.getElementById('c_cep').addEventListener('input', function(e) {
+            let v = e.target.value.replace(/\D/g,"");
+            v = v.replace(/(\d{5})(\d)/,"$1-$2");
+            e.target.value = v;
+        });
     </script>
 </body>
 </html>
+
