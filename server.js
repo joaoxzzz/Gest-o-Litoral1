@@ -35,6 +35,25 @@ async function iniciarBanco() {
                 email VARCHAR(255), telefone VARCHAR(50), 
                 categoria VARCHAR(100), observacoes TEXT
             );
+            CREATE TABLE IF NOT EXISTS funcionarios (
+                id SERIAL PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                cpf VARCHAR(50),
+                rg VARCHAR(50),
+                data_nascimento DATE,
+                data_admissao DATE,
+                cargo VARCHAR(100),
+                status VARCHAR(20) DEFAULT 'Ativo',
+                email VARCHAR(255),
+                telefone VARCHAR(50),
+                endereco VARCHAR(255),
+                cidade VARCHAR(100),
+                estado VARCHAR(50),
+                cep VARCHAR(20),
+                salario VARCHAR(50),
+                comissao VARCHAR(50),
+                observacoes TEXT
+            );
         `);
         console.log("✅ Banco de Dados Conectado com Sucesso!");
     } catch (err) { console.error("❌ Erro no Banco:", err); }
@@ -83,7 +102,6 @@ app.post('/api/clientes', async (req, res) => {
     } catch (err) { res.status(500).json({ message: "Erro ao salvar" }); }
 });
 
-// NOVA ROTA: Editar Cliente (PUT)
 app.put('/api/clientes/:id', async (req, res) => {
     const { id } = req.params;
     const { tipo, status, nome, documento, rg_ie, email, telefone, whatsapp, endereco, cidade, estado, cep, observacoes } = req.body;
@@ -140,6 +158,47 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM fornecedores WHERE id = $1', [req.params.id]);
         res.json({ message: "Fornecedor excluído" });
+    } catch (err) { res.status(500).json({ message: "Erro ao excluir" }); }
+});
+
+// ==========================================
+// --- API DE FUNCIONÁRIOS ---
+// ==========================================
+app.get('/api/funcionarios', async (req, res) => {
+    try {
+        const r = await pool.query('SELECT * FROM funcionarios ORDER BY id DESC');
+        res.json(r.rows);
+    } catch (err) { res.status(500).json([]); }
+});
+
+app.post('/api/funcionarios', async (req, res) => {
+    const { nome, cpf, rg, data_nascimento, data_admissao, cargo, status, email, telefone, endereco, cidade, estado, cep, salario, comissao, observacoes } = req.body;
+    try {
+        await pool.query(
+            `INSERT INTO funcionarios (nome, cpf, rg, data_nascimento, data_admissao, cargo, status, email, telefone, endereco, cidade, estado, cep, salario, comissao, observacoes) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`, 
+            [nome, cpf, rg, data_nascimento || null, data_admissao || null, cargo, status, email, telefone, endereco, cidade, estado, cep, salario, comissao, observacoes]
+        );
+        res.json({ message: "Funcionário salvo" });
+    } catch (err) { console.error(err); res.status(500).json({ message: "Erro ao salvar funcionário" }); }
+});
+
+app.put('/api/funcionarios/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, cpf, rg, data_nascimento, data_admissao, cargo, status, email, telefone, endereco, cidade, estado, cep, salario, comissao, observacoes } = req.body;
+    try {
+        await pool.query(
+            `UPDATE funcionarios SET nome=$1, cpf=$2, rg=$3, data_nascimento=$4, data_admissao=$5, cargo=$6, status=$7, email=$8, telefone=$9, endereco=$10, cidade=$11, estado=$12, cep=$13, salario=$14, comissao=$15, observacoes=$16 WHERE id=$17`, 
+            [nome, cpf, rg, data_nascimento || null, data_admissao || null, cargo, status, email, telefone, endereco, cidade, estado, cep, salario, comissao, observacoes, id]
+        );
+        res.json({ message: "Funcionário atualizado" });
+    } catch (err) { console.error(err); res.status(500).json({ message: "Erro ao atualizar" }); }
+});
+
+app.delete('/api/funcionarios/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM funcionarios WHERE id = $1', [req.params.id]);
+        res.json({ message: "Funcionário excluído" });
     } catch (err) { res.status(500).json({ message: "Erro ao excluir" }); }
 });
 
