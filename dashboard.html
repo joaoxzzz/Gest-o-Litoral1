@@ -20,13 +20,13 @@
                 </a>
                 
                 <div class="nav-item" style="cursor: pointer;" onclick="toggleMenu()">
-                    <i class='bx bx-user'></i> <span style="flex:1;">Cadastros</span> <i class='bx bx-chevron-left' id="seta-cadastros"></i>
+                    <i class='bx bx-user'></i> <span style="flex:1;">Cadastros</span> <i class='bx bx-chevron-down' id="seta-cadastros"></i>
                 </div>
                 
-                <div class="sub-menu" id="menu-cadastros">
+                <div class="sub-menu open" id="menu-cadastros">
                     <a href="#" class="sub-item" onclick="navegar('clientes', this)"><span class="dot">•</span> Clientes</a>
                     <a href="#" class="sub-item" onclick="navegar('fornecedores', this)"><span class="dot">•</span> Fornecedores</a>
-                    <a href="#" class="sub-item"><span class="dot">•</span> Funcionários</a>
+                    <a href="#" class="sub-item" onclick="navegar('funcionarios', this)"><span class="dot">•</span> Funcionários</a>
                 </div>
             </div>
         </div>
@@ -75,6 +75,20 @@
                 <table>
                     <thead><tr><th>Fornecedor</th><th>Contato</th><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead>
                     <tbody id="lista-fornecedores-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="view-funcionarios" style="display: none;">
+            <div class="header-title"><h1>Funcionários</h1><p id="total-func-sub">Gestão de equipe</p></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 20px;">
+                <div class="search-bar"><i class='bx bx-search' style="color: #94a3b8;"></i><input type="text" placeholder="Buscar por nome ou CPF..."></div>
+                <button class="btn-new" style="background: #1e3a8a;" onclick="abrirModalFuncionario()"><i class='bx bx-plus'></i> Novo Funcionário</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Funcionário</th><th>Cargo</th><th>Contato</th><th>Status</th><th>Ações</th></tr></thead>
+                    <tbody id="lista-funcionarios-body"></tbody>
                 </table>
             </div>
         </section>
@@ -132,6 +146,52 @@
         </div>
     </div>
 
+    <div id="modal-funcionario" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="titulo-modal-func">Novo Funcionário</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-funcionario')"></i></div>
+            <form id="formFunc">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group full-width"><label>Nome Completo *</label><input type="text" id="func_nome" class="form-input" required></div>
+                        <div class="form-group"><label>CPF *</label><input type="text" id="func_cpf" class="form-input" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="func_rg" class="form-input"></div>
+                        <div class="form-group"><label>Data de Nascimento</label><input type="date" id="func_nasc" class="form-input"></div>
+                        <div class="form-group"><label>Data de Admissão</label><input type="date" id="func_adm" class="form-input"></div>
+                        <div class="form-group">
+                            <label>Cargo *</label>
+                            <select id="func_cargo" class="form-select" required>
+                                <option value="">Selecione</option>
+                                <option value="Vendedor">Vendedor</option>
+                                <option value="Técnico de Loja">Técnico de Loja</option>
+                                <option value="Gerente">Gerente</option>
+                                <option value="Administrativo">Administrativo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="func_status" class="form-select">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Email</label><input type="email" id="func_email" class="form-input"></div>
+                        <div class="form-group"><label>Telefone</label><input type="text" id="func_tel" class="form-input"></div>
+                        <div class="form-group full-width"><label>Endereço</label><input type="text" id="func_end" class="form-input"></div>
+                        <div class="form-group full-width" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px;">
+                            <div class="form-group"><label>Cidade</label><input type="text" id="func_cidade" class="form-input"></div>
+                            <div class="form-group"><label>Estado</label><input type="text" id="func_uf" class="form-input"></div>
+                            <div class="form-group"><label>CEP</label><input type="text" id="func_cep" class="form-input"></div>
+                        </div>
+                        <div class="form-group"><label>Salário</label><input type="text" id="func_salario" class="form-input" placeholder="R$ 0,00"></div>
+                        <div class="form-group"><label>Comissão (%)</label><input type="text" id="func_comissao" class="form-input" placeholder="0%"></div>
+                        <div class="form-group full-width"><label>Observações</label><textarea id="func_obs" class="form-textarea"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-funcionario')">Cancelar</button><button type="submit" class="btn-save" style="background: #1e3a8a;">Cadastrar</button></div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // FUNÇÃO PARA ABRIR/FECHAR O MENU CADASTROS
         function toggleMenu() {
@@ -150,13 +210,16 @@
         // VARIAVEIS GLOBAIS PARA EDIÇÃO
         let clientesData = [];
         let fornecedoresData = [];
+        let funcionariosData = [];
         let idEditandoCliente = null;
         let idEditandoFornecedor = null;
+        let idEditandoFuncionario = null;
 
         function navegar(tela, el) {
             document.getElementById('view-dashboard').style.display = 'none';
             document.getElementById('view-clientes').style.display = 'none';
             document.getElementById('view-fornecedores').style.display = 'none';
+            document.getElementById('view-funcionarios').style.display = 'none';
             
             document.querySelectorAll('.nav-item, .sub-item').forEach(e => e.classList.remove('active'));
             document.getElementById('view-' + tela).style.display = 'block';
@@ -164,6 +227,7 @@
             
             if(tela === 'clientes') carregarClientes();
             if(tela === 'fornecedores') carregarFornecedores();
+            if(tela === 'funcionarios') carregarFuncionarios();
         }
 
         function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -192,7 +256,7 @@
 
         async function carregarClientes() {
             try {
-                const res = await fetch('/api/clientes'); // Mude aqui para o link do render se for testar no Live Server
+                const res = await fetch('/api/clientes');
                 clientesData = await res.json();
                 document.getElementById('total-clientes-dash').innerText = clientesData.length;
                 document.getElementById('total-clientes-sub').innerText = `${clientesData.length} clientes cadastrados`;
@@ -302,15 +366,100 @@
 
         async function excluirFornecedor(id) { if(confirm("Excluir fornecedor?")) { await fetch(`/api/fornecedores/${id}`, { method: 'DELETE' }); carregarFornecedores(); } }
 
-        // Inicialização e Máscaras
+        // ==========================================
+        // LÓGICA DE FUNCIONÁRIOS (NOVO)
+        // ==========================================
+        function abrirModalFuncionario(id = null) { 
+            idEditandoFuncionario = id;
+            if(id) {
+                document.getElementById('titulo-modal-func').innerText = "Editar Funcionário";
+                const f = funcionariosData.find(x => x.id === id);
+                document.getElementById('func_nome').value = f.nome; document.getElementById('func_cpf').value = f.cpf || '';
+                document.getElementById('func_rg').value = f.rg || ''; 
+                document.getElementById('func_nasc').value = f.data_nascimento ? f.data_nascimento.split('T')[0] : '';
+                document.getElementById('func_adm').value = f.data_admissao ? f.data_admissao.split('T')[0] : '';
+                document.getElementById('func_cargo').value = f.cargo || ''; document.getElementById('func_status').value = f.status || 'Ativo';
+                document.getElementById('func_email').value = f.email || ''; document.getElementById('func_tel').value = f.telefone || '';
+                document.getElementById('func_end').value = f.endereco || ''; document.getElementById('func_cidade').value = f.cidade || '';
+                document.getElementById('func_uf').value = f.estado || ''; document.getElementById('func_cep').value = f.cep || '';
+                document.getElementById('func_salario').value = f.salario || ''; document.getElementById('func_comissao').value = f.comissao || '';
+                document.getElementById('func_obs').value = f.observacoes || '';
+            } else {
+                document.getElementById('titulo-modal-func').innerText = "Novo Funcionário";
+                document.getElementById('formFunc').reset();
+            }
+            document.getElementById('modal-funcionario').style.display = 'flex'; 
+        }
+
+        async function carregarFuncionarios() {
+            try {
+                const res = await fetch('/api/funcionarios');
+                funcionariosData = await res.json();
+                document.getElementById('total-func-sub').innerText = `${funcionariosData.length} funcionários cadastrados`;
+
+                const tbody = document.getElementById('lista-funcionarios-body');
+                
+                if(funcionariosData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="empty-state"><i class='bx bx-id-card'></i><p>Nenhum funcionário encontrado</p></td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = funcionariosData.map(f => {
+                    const statusClass = f.status === 'Ativo' ? 'status-active' : 'status-inactive';
+                    const inicial = f.nome.charAt(0).toUpperCase(); // Pega a primeira letra pro icone amarelo
+                    
+                    return `<tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="client-icon-box" style="background:#fef08a; color:#a16207; font-weight:bold; font-size:1.2rem;">${inicial}</div>
+                                <div><div style="font-weight: 600; color: #1e293b;">${f.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${f.cpf || '-'}</div></div>
+                            </div>
+                        </td>
+                        <td><div style="display:flex; align-items:center; gap:5px; color:#64748b;"><i class='bx bx-briefcase'></i> ${f.cargo || '-'}</div></td>
+                        <td><div style="font-size: 0.9rem;">${f.telefone ? `<i class='bx bx-phone'></i> ${f.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${f.email || ''}</div></td>
+                        <td><span class="status-badge ${statusClass}">${f.status || 'Ativo'}</span></td>
+                        <td>
+                            <button class="action-btn" onclick="abrirModalFuncionario(${f.id})"><i class='bx bx-edit-alt'></i></button>
+                            <button class="action-btn" onclick="excluirFuncionario(${f.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } catch (error) { console.error(error); }
+        }
+
+        document.getElementById('formFunc').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dados = {
+                nome: document.getElementById('func_nome').value, cpf: document.getElementById('func_cpf').value,
+                rg: document.getElementById('func_rg').value, data_nascimento: document.getElementById('func_nasc').value,
+                data_admissao: document.getElementById('func_adm').value, cargo: document.getElementById('func_cargo').value,
+                status: document.getElementById('func_status').value, email: document.getElementById('func_email').value,
+                telefone: document.getElementById('func_tel').value, endereco: document.getElementById('func_end').value,
+                cidade: document.getElementById('func_cidade').value, estado: document.getElementById('func_uf').value,
+                cep: document.getElementById('func_cep').value, salario: document.getElementById('func_salario').value,
+                comissao: document.getElementById('func_comissao').value, observacoes: document.getElementById('func_obs').value
+            };
+
+            const url = idEditandoFuncionario ? `/api/funcionarios/${idEditandoFuncionario}` : '/api/funcionarios';
+            const method = idEditandoFuncionario ? 'PUT' : 'POST';
+
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados) });
+            fecharModal('modal-funcionario'); carregarFuncionarios();
+        });
+
+        async function excluirFuncionario(id) { if(confirm("Excluir funcionário?")) { await fetch(`/api/funcionarios/${id}`, { method: 'DELETE' }); carregarFuncionarios(); } }
+
+        // ==========================================
+        // INICIALIZAÇÃO E MÁSCARAS
+        // ==========================================
         window.onload = () => {
             carregarClientes();
             new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar','Abr','Mai'], datasets: [{ label: 'R$', data: [15,30,12,20,45], borderColor: '#1e3a8a', tension: 0.4, fill: false }] } });
             new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['Chaveiro','Alarmes'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] }, options: { cutout: '70%' } });
         }
 
-        // Máscaras de input...
-        const docs = [document.getElementById('c_doc'), document.getElementById('f_doc')];
+        // Máscaras
+        const docs = [document.getElementById('c_doc'), document.getElementById('f_doc'), document.getElementById('func_cpf')];
         docs.forEach(doc => {
             if(doc) doc.addEventListener('input', function(e) {
                 let v = e.target.value.replace(/\D/g,"");
@@ -324,12 +473,14 @@
             let v = e.target.value.replace(/\D/g,"");
             v = v.replace(/^(\d{2})(\d)/g,"($1) $2"); v = v.replace(/(\d)(\d{4})$/,"$1-$2"); e.target.value = v;
         };
-        ['c_tel', 'c_whats', 'f_tel'].forEach(id => {
+        ['c_tel', 'c_whats', 'f_tel', 'func_tel'].forEach(id => {
             if(document.getElementById(id)) document.getElementById(id).addEventListener('input', mascaraTelefone);
         });
         
-        document.getElementById('c_cep').addEventListener('input', function(e) {
-            let v = e.target.value.replace(/\D/g,""); v = v.replace(/(\d{5})(\d)/,"$1-$2"); e.target.value = v;
+        ['c_cep', 'func_cep'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).addEventListener('input', function(e) {
+                let v = e.target.value.replace(/\D/g,""); v = v.replace(/(\d{5})(\d)/,"$1-$2"); e.target.value = v;
+            });
         });
     </script>
 </body>
