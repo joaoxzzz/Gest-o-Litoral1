@@ -29,21 +29,43 @@
                     <div class="input-pill"><i class='bx bxs-user'></i><input type="text" id="user" placeholder="Digite seu usuário" required></div>
                     <label style="color:#cbd5e1; font-size:0.9rem; margin-left:15px;">Senha</label>
                     <div class="input-pill"><i class='bx bxs-lock-alt'></i><input type="password" id="pass" placeholder="Digite sua senha" required></div>
-                    <button type="submit" class="btn-auth">Acessar minha conta</button>
+                    <button type="submit" class="btn-auth" id="btn-login">Acessar minha conta</button>
                     <p class="auth-footer">Não tem uma conta? <a href="cadastro.html">Cadastre-se agora!</a></p>
                 </form>
             </div>
         </div>
     </div>
     <script>
+        const API_URL = 'https://gestao-litoral.onrender.com';
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usuario: document.getElementById('user').value, senha: document.getElementById('pass').value })
-            });
-            if (response.ok) { window.location.href = 'dashboard.html'; } else { alert("❌ Login Inválido"); }
+            const btn = document.getElementById('btn-login');
+            btn.innerText = "Carregando...";
+            
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        usuario: document.getElementById('user').value, 
+                        senha: document.getElementById('pass').value 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) { 
+                    localStorage.setItem('usuarioNome', data.nome || 'Admin');
+                    window.location.href = 'dashboard.html'; 
+                } else { 
+                    alert("❌ " + data.message); 
+                    btn.innerText = "Acessar minha conta";
+                }
+            } catch (error) {
+                alert("❌ Erro ao se conectar com o servidor no Render. O servidor pode estar dormindo, aguarde 1 minuto e tente de novo.");
+                btn.innerText = "Acessar minha conta";
+            }
         });
     </script>
 </body>
