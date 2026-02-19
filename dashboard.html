@@ -15,9 +15,15 @@
                 <div><h3 style="color:white; font-size: 1rem;">EXCEL</h3><span style="font-size: 0.7rem; color: #94a3b8;">Chaveiro & Segurança</span></div>
             </div>
             <div class="nav-menu">
-                <a href="#" class="nav-item active" onclick="navegar('dashboard', this)"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a>
-                <div class="nav-item" style="cursor: default;"><i class='bx bx-user'></i> <span style="flex:1;">Cadastros</span> <i class='bx bx-chevron-up'></i></div>
-                <div class="sub-menu">
+                <a href="#" class="nav-item active" onclick="navegar('dashboard', this)">
+                    <i class='bx bxs-dashboard'></i> <span>Dashboard</span>
+                </a>
+                
+                <div class="nav-item" style="cursor: pointer;" onclick="toggleMenu()">
+                    <i class='bx bx-user'></i> <span style="flex:1;">Cadastros</span> <i class='bx bx-chevron-left' id="seta-cadastros"></i>
+                </div>
+                
+                <div class="sub-menu" id="menu-cadastros">
                     <a href="#" class="sub-item" onclick="navegar('clientes', this)"><span class="dot">•</span> Clientes</a>
                     <a href="#" class="sub-item" onclick="navegar('fornecedores', this)"><span class="dot">•</span> Fornecedores</a>
                     <a href="#" class="sub-item"><span class="dot">•</span> Funcionários</a>
@@ -127,6 +133,20 @@
     </div>
 
     <script>
+        // FUNÇÃO PARA ABRIR/FECHAR O MENU CADASTROS
+        function toggleMenu() {
+            const menu = document.getElementById('menu-cadastros');
+            const seta = document.getElementById('seta-cadastros');
+            
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                seta.classList.replace('bx-chevron-down', 'bx-chevron-left');
+            } else {
+                menu.classList.add('open');
+                seta.classList.replace('bx-chevron-left', 'bx-chevron-down');
+            }
+        }
+
         // VARIAVEIS GLOBAIS PARA EDIÇÃO
         let clientesData = [];
         let fornecedoresData = [];
@@ -172,7 +192,7 @@
 
         async function carregarClientes() {
             try {
-                const res = await fetch('/api/clientes'); // Lembre-se de colocar a URL do Render se estiver no Live Server
+                const res = await fetch('/api/clientes'); // Mude aqui para o link do render se for testar no Live Server
                 clientesData = await res.json();
                 document.getElementById('total-clientes-dash').innerText = clientesData.length;
                 document.getElementById('total-clientes-sub').innerText = `${clientesData.length} clientes cadastrados`;
