@@ -9,42 +9,35 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Configuração do Banco de Dados
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false } 
 });
 
-// Inicializa Tabelas
 async function iniciarBanco() {
     try {
-        
-        // 2. Cria as tabelas com todas as colunas novas
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY, nome VARCHAR(255), usuario VARCHAR(255) UNIQUE, senha VARCHAR(255)
             );
             CREATE TABLE IF NOT EXISTS clientes (
                 id SERIAL PRIMARY KEY, 
-                tipo VARCHAR(50), 
+                tipo VARCHAR(50), status VARCHAR(20) DEFAULT 'Ativo',
+                nome VARCHAR(255), documento VARCHAR(50), rg_ie VARCHAR(50),     
+                email VARCHAR(255), telefone VARCHAR(50), whatsapp VARCHAR(50),
+                endereco VARCHAR(255), cidade VARCHAR(100), estado VARCHAR(50),
+                cep VARCHAR(20), observacoes TEXT
+            );
+            CREATE TABLE IF NOT EXISTS fornecedores (
+                id SERIAL PRIMARY KEY, 
                 status VARCHAR(20) DEFAULT 'Ativo',
-                nome VARCHAR(255), 
-                documento VARCHAR(50), 
-                rg_ie VARCHAR(50),     
-                email VARCHAR(255), 
-                telefone VARCHAR(50), 
-                whatsapp VARCHAR(50),
-                endereco VARCHAR(255),
-                cidade VARCHAR(100),
-                estado VARCHAR(50),
-                cep VARCHAR(20),
-                observacoes TEXT
+                nome VARCHAR(255), documento VARCHAR(50), 
+                email VARCHAR(255), telefone VARCHAR(50), 
+                categoria VARCHAR(100), observacoes TEXT
             );
         `);
         console.log("✅ Banco de Dados Conectado com Sucesso!");
-    } catch (err) { 
-        console.error("❌ Erro no Banco:", err); 
-    }
+    } catch (err) { console.error("❌ Erro no Banco:", err); }
 }
 iniciarBanco();
 
@@ -68,7 +61,9 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ message: "Erro interno" }); }
 });
 
+// ==========================================
 // --- API DE CLIENTES ---
+// ==========================================
 app.get('/api/clientes', async (req, res) => {
     try {
         const r = await pool.query('SELECT * FROM clientes ORDER BY id DESC');
@@ -85,16 +80,66 @@ app.post('/api/clientes', async (req, res) => {
             [tipo, status, nome, documento, rg_ie, email, telefone, whatsapp, endereco, cidade, estado, cep, observacoes]
         );
         res.json({ message: "Cliente salvo" });
-    } catch (err) { 
-        console.error(err);
-        res.status(500).json({ message: "Erro ao salvar" }); 
-    }
+    } catch (err) { res.status(500).json({ message: "Erro ao salvar" }); }
+});
+
+// NOVA ROTA: Editar Cliente (PUT)
+app.put('/api/clientes/:id', async (req, res) => {
+    const { id } = req.params;
+    const { tipo, status, nome, documento, rg_ie, email, telefone, whatsapp, endereco, cidade, estado, cep, observacoes } = req.body;
+    try {
+        await pool.query(
+            `UPDATE clientes SET tipo=$1, status=$2, nome=$3, documento=$4, rg_ie=$5, email=$6, telefone=$7, whatsapp=$8, endereco=$9, cidade=$10, estado=$11, cep=$12, observacoes=$13 WHERE id=$14`, 
+            [tipo, status, nome, documento, rg_ie, email, telefone, whatsapp, endereco, cidade, estado, cep, observacoes, id]
+        );
+        res.json({ message: "Cliente atualizado" });
+    } catch (err) { res.status(500).json({ message: "Erro ao atualizar" }); }
 });
 
 app.delete('/api/clientes/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM clientes WHERE id = $1', [req.params.id]);
         res.json({ message: "Cliente excluído" });
+    } catch (err) { res.status(500).json({ message: "Erro ao excluir" }); }
+});
+
+// ==========================================
+// --- API DE FORNECEDORES ---
+// ==========================================
+app.get('/api/fornecedores', async (req, res) => {
+    try {
+        const r = await pool.query('SELECT * FROM fornecedores ORDER BY id DESC');
+        res.json(r.rows);
+    } catch (err) { res.status(500).json([]); }
+});
+
+app.post('/api/fornecedores', async (req, res) => {
+    const { status, nome, documento, email, telefone, categoria, observacoes } = req.body;
+    try {
+        await pool.query(
+            `INSERT INTO fornecedores (status, nome, documento, email, telefone, categoria, observacoes) VALUES ($1, $2, $3, $4, $5, $6, $7)`, 
+            [status, nome, documento, email, telefone, categoria, observacoes]
+        );
+        res.json({ message: "Fornecedor salvo" });
+    } catch (err) { res.status(500).json({ message: "Erro ao salvar" }); }
+});
+
+app.put('/api/fornecedores/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status, nome, documento, email, telefone, categoria, observacoes } = req.body;
+    try {
+        await pool.query(
+            `UPDATE fornecedores SET status=$1, nome=$2, documento=$3, email=$4, telefone=$5, categoria=$6, observacoes=$7 WHERE id=$8`, 
+            [status, nome, documento, email, telefone, categoria, observacoes, id]
+        );
+        res.json({ message: "Fornecedor atualizado" });
+    } catch (err) { res.status(500).json({ message: "Erro ao atualizar" }); }
+});
+
+app.delete('/api/fornecedores/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM fornecedores WHERE id = $1', [req.params.id]);
+        res.json({ message: "Fornecedor excluído" });
     } catch (err) { res.status(500).json({ message: "Erro ao excluir" }); }
 });
 
