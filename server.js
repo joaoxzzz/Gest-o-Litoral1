@@ -15,12 +15,11 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false } 
 });
 
-// Substitua apenas a função iniciarBanco no seu server.js
+// Apenas a função do seu server.js que você vai enviar para o Render
 async function iniciarBanco() {
     try {
-        // Dropa a tabela antiga de clientes para criar a nova com os campos atualizados
-        await pool.query('DROP TABLE IF EXISTS clientes;'); 
         
+        // Vamos garantir que a tabela exista. 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY, nome VARCHAR(255), usuario VARCHAR(255) UNIQUE, senha VARCHAR(255)
@@ -42,7 +41,20 @@ async function iniciarBanco() {
                 observacoes TEXT
             );
         `);
-        console.log("✅ Banco de Dados Atualizado com Sucesso!");
+        
+        // Se a tabela antiga já existir no Render, precisamos adicionar as colunas manualmente pelo código
+        // (Isso evita erros se as colunas não existirem)
+        const addColumns = `
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS rg_ie VARCHAR(50);
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS whatsapp VARCHAR(50);
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS endereco VARCHAR(255);
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS estado VARCHAR(50);
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS cep VARCHAR(20);
+            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS observacoes TEXT;
+        `;
+        await pool.query(addColumns);
+
+        console.log("✅ Banco de Dados no Render Conectado e Atualizado");
     } catch (err) { console.error("❌ Erro no Banco:", err); }
 }
 
@@ -99,4 +111,3 @@ app.delete('/api/clientes/:id', async (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
-
