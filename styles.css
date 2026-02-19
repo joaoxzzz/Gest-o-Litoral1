@@ -31,6 +31,36 @@ body.auth-page { display: block; overflow-y: auto; background: var(--login-bg-ri
 .user-profile { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
 .avatar-circle { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
 
+/* --- SUB-MENU (Correção do Roxo e Alinhamento) --- */
+.sub-menu { 
+    display: none; /* Começa fechado */
+    flex-direction: column; /* Um item embaixo do outro */
+    gap: 2px; 
+    margin-bottom: 10px; 
+}
+
+.sub-menu.open {
+    display: flex; /* Mostra quando a classe open é adicionada pelo JS */
+}
+
+.sub-item { 
+    padding: 10px 16px 10px 45px; 
+    font-size: 0.9rem; 
+    color: #94a3b8 !important; /* Tira o roxo do navegador */
+    text-decoration: none !important; /* Tira o sublinhado */
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    transition: 0.2s; 
+}
+.sub-item:hover { color: white !important; background: rgba(255,255,255,0.05); }
+.sub-item.active { background: var(--active-yellow) !important; color: #0f172a !important; font-weight: 600; }
+.sub-item .dot { font-size: 1.5rem; margin-right: 8px; line-height: 0; padding-bottom: 2px; }
+
+/* TELA VAZIA (Empty State) */
+.empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+.empty-state i { font-size: 3.5rem; color: #cbd5e1; margin-bottom: 10px; display: block; }
+
 /* DASHBOARD CONTENT */
 .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 .header-title h1 { color: var(--text-primary); font-size: 1.8rem; margin-bottom: 5px; }
@@ -43,7 +73,7 @@ body.auth-page { display: block; overflow-y: auto; background: var(--login-bg-ri
 .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 30px; }
 .chart-container { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
 
-/* LISTA DE CLIENTES - ESTILO ATUALIZADO */
+/* LISTA DE CLIENTES E FORNECEDORES */
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 20px; }
 .btn-new { background: #1e3a8a; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .search-bar { background: white; border: 1px solid #e2e8f0; padding: 10px 15px; border-radius: 8px; width: 350px; display: flex; align-items: center; gap: 10px; }
@@ -55,18 +85,21 @@ td { padding: 18px 24px; border-bottom: 1px solid #f1f5f9; color: var(--text-pri
 
 /* Ícones da Tabela */
 .client-icon-box { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 15px; }
-.icon-business { background: #dbeafe; color: #1e40af; } /* Azul para empresa */
-.icon-person { background: #fef3c7; color: #b45309; }   /* Amarelo para pessoa */
+.icon-business { background: #dbeafe; color: #1e40af; } 
+.icon-person { background: #fef3c7; color: #b45309; }   
 
 .user-cell { display: flex; align-items: center; }
-.status-badge { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-active { background: #dcfce7; color: #166534; }
+.status-inactive { background: #fee2e2; color: #991b1b; }
+
 .action-btn { background: none; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; color: #64748b; padding: 6px 8px; font-size: 1rem; margin-right: 5px; transition: 0.2s; }
 .action-btn:hover { background: #f1f5f9; color: var(--accent-blue); }
 .filter-tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #e2e8f0; padding: 4px; border-radius: 8px; width: fit-content; }
 .tab-btn { padding: 6px 16px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: 500; color: var(--text-secondary); font-size: 0.9rem; }
 .tab-btn.active { background: white; color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-/* --- MODAL NOVO CLIENTE (Formulário Complexo) --- */
+/* --- MODAIS --- */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
 .modal-content { background: white; padding: 0; border-radius: 12px; width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; }
 .modal-header { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
@@ -95,7 +128,7 @@ td { padding: 18px 24px; border-bottom: 1px solid #f1f5f9; color: var(--text-pri
 .input-pill { background: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; margin-bottom: 20px; border: 2px solid transparent; transition: 0.3s; }
 .input-pill:focus-within { border-color: var(--accent-blue); }
 .input-pill i { color: #64748b; margin-right: 15px; font-size: 1.2rem; }
-.input-pill input { border: none; outline: none; width: 100%; font-size: 0.95rem; background: transparent; }
+.input-pill input { border: none; outline: none; width: 100%; font-size: 0.95rem; background: transparent; color: white; }
 .btn-auth { width: 100%; padding: 15px; border-radius: 50px; background: var(--accent-blue); color: white; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.3s; }
 .register-centered { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--login-bg-right); }
 .register-card { background: #1e293b; padding: 40px; border-radius: 20px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); text-align: center; }
