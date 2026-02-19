@@ -15,9 +15,12 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false } 
 });
 
-// Inicializa Tabelas (Atualizei a tabela clientes com novos campos)
+// Substitua apenas a função iniciarBanco no seu server.js
 async function iniciarBanco() {
     try {
+        // Dropa a tabela antiga de clientes para criar a nova com os campos atualizados
+        await pool.query('DROP TABLE IF EXISTS clientes;'); 
+        
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY, nome VARCHAR(255), usuario VARCHAR(255) UNIQUE, senha VARCHAR(255)
@@ -27,8 +30,8 @@ async function iniciarBanco() {
                 tipo VARCHAR(50), 
                 status VARCHAR(20) DEFAULT 'Ativo',
                 nome VARCHAR(255), 
-                documento VARCHAR(50), -- CPF ou CNPJ
-                rg_ie VARCHAR(50),     -- RG ou Inscrição Estadual
+                documento VARCHAR(50), 
+                rg_ie VARCHAR(50),     
                 email VARCHAR(255), 
                 telefone VARCHAR(50), 
                 whatsapp VARCHAR(50),
@@ -39,10 +42,9 @@ async function iniciarBanco() {
                 observacoes TEXT
             );
         `);
-        console.log("✅ Banco de Dados Conectado e Atualizado");
+        console.log("✅ Banco de Dados Atualizado com Sucesso!");
     } catch (err) { console.error("❌ Erro no Banco:", err); }
 }
-iniciarBanco();
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 app.post('/cadastrar', async (req, res) => {
@@ -97,3 +99,4 @@ app.delete('/api/clientes/:id', async (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
+
