@@ -15,11 +15,13 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false } 
 });
 
-// Apenas a função do seu server.js que você vai enviar para o Render
+// Inicializa Tabelas
 async function iniciarBanco() {
     try {
+        // 1. Apaga a tabela antiga para evitar conflitos (Reseta os dados de teste)
+        await pool.query('DROP TABLE IF EXISTS clientes;'); 
         
-        // Vamos garantir que a tabela exista. 
+        // 2. Cria as tabelas com todas as colunas novas
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY, nome VARCHAR(255), usuario VARCHAR(255) UNIQUE, senha VARCHAR(255)
@@ -41,22 +43,12 @@ async function iniciarBanco() {
                 observacoes TEXT
             );
         `);
-        
-        // Se a tabela antiga já existir no Render, precisamos adicionar as colunas manualmente pelo código
-        // (Isso evita erros se as colunas não existirem)
-        const addColumns = `
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS rg_ie VARCHAR(50);
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS whatsapp VARCHAR(50);
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS endereco VARCHAR(255);
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS estado VARCHAR(50);
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS cep VARCHAR(20);
-            ALTER TABLE clientes ADD COLUMN IF NOT EXISTS observacoes TEXT;
-        `;
-        await pool.query(addColumns);
-
-        console.log("✅ Banco de Dados no Render Conectado e Atualizado");
-    } catch (err) { console.error("❌ Erro no Banco:", err); }
+        console.log("✅ Banco de Dados Resetado e Atualizado com Sucesso no Render!");
+    } catch (err) { 
+        console.error("❌ Erro no Banco:", err); 
+    }
 }
+iniciarBanco();
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 app.post('/cadastrar', async (req, res) => {
@@ -78,7 +70,7 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ message: "Erro interno" }); }
 });
 
-// --- API DE CLIENTES (ATUALIZADA) ---
+// --- API DE CLIENTES ---
 app.get('/api/clientes', async (req, res) => {
     try {
         const r = await pool.query('SELECT * FROM clientes ORDER BY id DESC');
@@ -87,7 +79,6 @@ app.get('/api/clientes', async (req, res) => {
 });
 
 app.post('/api/clientes', async (req, res) => {
-    // Recebendo todos os campos do novo formulário
     const { tipo, status, nome, documento, rg_ie, email, telefone, whatsapp, endereco, cidade, estado, cep, observacoes } = req.body;
     try {
         await pool.query(
