@@ -56,14 +56,16 @@
                 const data = await response.json();
                 
                 if (response.ok) { 
-                    localStorage.setItem('usuarioNome', data.nome || 'Admin');
+                    // O SEGREDO DO SISTEMA MULTI-USUÁRIO ESTÁ AQUI
+                    localStorage.setItem('usuarioNome', data.nome || 'Usuário');
+                    localStorage.setItem('usuarioId', data.id); // Salva o crachá do usuário!
                     window.location.href = 'dashboard.html'; 
                 } else { 
                     alert("❌ " + data.message); 
                     btn.innerText = "Acessar minha conta";
                 }
             } catch (error) {
-                alert("❌ Erro ao se conectar com o servidor no Render. O servidor pode estar dormindo, aguarde 1 minuto e tente de novo.");
+                alert("❌ Erro ao se conectar com o servidor no Render.");
                 btn.innerText = "Acessar minha conta";
             }
         });
