@@ -171,6 +171,28 @@
         // --- CONSTANTE DE CONEXÃO COM O RENDER ---
         const API_URL = 'https://gestao-litoral.onrender.com';
 
+        // TRAVA DE SEGURANÇA: Se não tiver logado (sem crachá), volta pro login!
+        const usuarioId = localStorage.getItem('usuarioId');
+        if (!usuarioId) {
+            window.location.href = 'index.html';
+        }
+
+        // Função de Logout Segura
+        function fazerLogout() {
+            localStorage.clear(); // Apaga o crachá
+            window.location.href = 'index.html';
+        }
+
+        // --- Função Auxiliar para Requisições (Envia o crachá) ---
+        async function fetchComAutenticacao(url, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'usuario-id': usuarioId // Mandando o crachá invisível pro servidor!
+            };
+            const config = { ...options, headers: headers };
+            return fetch(url, config);
+        }
+
         function toggleMenu() {
             const menu = document.getElementById('menu-cadastros');
             const seta = document.getElementById('seta-cadastros');
@@ -206,7 +228,7 @@
         }
         async function carregarClientes() {
             try {
-                const res = await fetch(`${API_URL}/api/clientes`); clientesData = await res.json();
+                const res = await fetchComAutenticacao(`${API_URL}/api/clientes`); clientesData = await res.json();
                 document.getElementById('total-clientes-dash').innerText = clientesData.length; document.getElementById('total-clientes-sub').innerText = `${clientesData.length} clientes cadastrados`;
                 document.getElementById('lista-clientes-body').innerHTML = clientesData.map(c => {
                     const ic = c.tipo === 'Juridica' ? 'bx-building' : 'bx-user'; const cc = c.tipo === 'Juridica' ? 'icon-business' : 'icon-person'; const sc = c.status === 'Ativo' ? 'status-active' : 'status-inactive';
@@ -216,10 +238,10 @@
         }
         document.getElementById('formCli').addEventListener('submit', async (e) => {
             e.preventDefault(); const d = { tipo: document.getElementById('c_tipo').value, status: document.getElementById('c_status').value, nome: document.getElementById('c_nome').value, documento: document.getElementById('c_doc').value, rg_ie: document.getElementById('c_rg').value, email: document.getElementById('c_email').value, telefone: document.getElementById('c_tel').value, whatsapp: document.getElementById('c_whats').value, endereco: document.getElementById('c_end').value, cidade: document.getElementById('c_cidade').value, estado: document.getElementById('c_uf').value, cep: document.getElementById('c_cep').value, observacoes: document.getElementById('c_obs').value };
-            await fetch(idEditandoCliente ? `${API_URL}/api/clientes/${idEditandoCliente}` : `${API_URL}/api/clientes`, { method: idEditandoCliente ? 'PUT' : 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) });
+            await fetchComAutenticacao(idEditandoCliente ? `${API_URL}/api/clientes/${idEditandoCliente}` : `${API_URL}/api/clientes`, { method: idEditandoCliente ? 'PUT' : 'POST', body: JSON.stringify(d) });
             fecharModal('modal-cliente'); carregarClientes();
         });
-        async function excluirCliente(id) { if(confirm("Excluir cliente?")) { await fetch(`${API_URL}/api/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
+        async function excluirCliente(id) { if(confirm("Excluir cliente?")) { await fetchComAutenticacao(`${API_URL}/api/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
 
         // --- FORNECEDORES ---
         function abrirModalFornecedor(id = null) { 
@@ -230,16 +252,16 @@
         }
         async function carregarFornecedores() {
             try {
-                const res = await fetch(`${API_URL}/api/fornecedores`); fornecedoresData = await res.json();
+                const res = await fetchComAutenticacao(`${API_URL}/api/fornecedores`); fornecedoresData = await res.json();
                 document.getElementById('lista-fornecedores-body').innerHTML = fornecedoresData.map(f => `<tr><td><div class="user-cell"><div class="client-icon-box" style="background:#f3f4f6; color:#475569;"><i class='bx bx-package'></i></div><div><div style="font-weight: 600; color: #1e293b;">${f.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${f.documento || '-'}</div></div></div></td><td><div style="font-size: 0.9rem;">${f.telefone ? `<i class='bx bx-phone'></i> ${f.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${f.email || ''}</div></td><td><div style="font-weight: 500; color:#64748b;">${f.categoria}</div></td><td><span class="status-badge ${f.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${f.status || 'Ativo'}</span></td><td><button class="action-btn" onclick="abrirModalFornecedor(${f.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirFornecedor(${f.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join('');
             } catch (e) { console.error(e); }
         }
         document.getElementById('formForn').addEventListener('submit', async (e) => {
             e.preventDefault(); const d = { categoria: document.getElementById('f_cat').value, status: document.getElementById('f_status').value, nome: document.getElementById('f_nome').value, documento: document.getElementById('f_doc').value, email: document.getElementById('f_email').value, telefone: document.getElementById('f_tel').value, observacoes: document.getElementById('f_obs').value };
-            await fetch(idEditandoFornecedor ? `${API_URL}/api/fornecedores/${idEditandoFornecedor}` : `${API_URL}/api/fornecedores`, { method: idEditandoFornecedor ? 'PUT' : 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) });
+            await fetchComAutenticacao(idEditandoFornecedor ? `${API_URL}/api/fornecedores/${idEditandoFornecedor}` : `${API_URL}/api/fornecedores`, { method: idEditandoFornecedor ? 'PUT' : 'POST', body: JSON.stringify(d) });
             fecharModal('modal-fornecedor'); carregarFornecedores();
         });
-        async function excluirFornecedor(id) { if(confirm("Excluir?")) { await fetch(`${API_URL}/api/fornecedores/${id}`, { method: 'DELETE' }); carregarFornecedores(); } }
+        async function excluirFornecedor(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/fornecedores/${id}`, { method: 'DELETE' }); carregarFornecedores(); } }
 
         // --- FUNCIONÁRIOS ---
         function abrirModalFuncionario(id = null) { 
@@ -250,16 +272,16 @@
         }
         async function carregarFuncionarios() {
             try {
-                const res = await fetch(`${API_URL}/api/funcionarios`); funcionariosData = await res.json();
+                const res = await fetchComAutenticacao(`${API_URL}/api/funcionarios`); funcionariosData = await res.json();
                 document.getElementById('lista-funcionarios-body').innerHTML = funcionariosData.map(f => `<tr><td><div class="user-cell"><div class="client-icon-box" style="background:#fef08a; color:#a16207; font-weight:bold; font-size:1.2rem;">${f.nome.charAt(0).toUpperCase()}</div><div><div style="font-weight: 600; color: #1e293b;">${f.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${f.cpf || '-'}</div></div></div></td><td><div style="display:flex; align-items:center; gap:5px; color:#64748b;"><i class='bx bx-briefcase'></i> ${f.cargo || '-'}</div></td><td><div style="font-size: 0.9rem;">${f.telefone ? `<i class='bx bx-phone'></i> ${f.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${f.email || ''}</div></td><td><span class="status-badge ${f.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${f.status || 'Ativo'}</span></td><td><button class="action-btn" onclick="abrirModalFuncionario(${f.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirFuncionario(${f.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join('');
             } catch (e) { console.error(e); }
         }
         document.getElementById('formFunc').addEventListener('submit', async (e) => {
             e.preventDefault(); const d = { nome: document.getElementById('func_nome').value, cpf: document.getElementById('func_cpf').value, rg: document.getElementById('func_rg').value, data_nascimento: document.getElementById('func_nasc').value, data_admissao: document.getElementById('func_adm').value, cargo: document.getElementById('func_cargo').value, status: document.getElementById('func_status').value, email: document.getElementById('func_email').value, telefone: document.getElementById('func_tel').value, endereco: document.getElementById('func_end').value, cidade: document.getElementById('func_cidade').value, estado: document.getElementById('func_uf').value, cep: document.getElementById('func_cep').value, salario: document.getElementById('func_salario').value, comissao: document.getElementById('func_comissao').value, observacoes: document.getElementById('func_obs').value };
-            await fetch(idEditandoFuncionario ? `${API_URL}/api/funcionarios/${idEditandoFuncionario}` : `${API_URL}/api/funcionarios`, { method: idEditandoFuncionario ? 'PUT' : 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) });
+            await fetchComAutenticacao(idEditandoFuncionario ? `${API_URL}/api/funcionarios/${idEditandoFuncionario}` : `${API_URL}/api/funcionarios`, { method: idEditandoFuncionario ? 'PUT' : 'POST', body: JSON.stringify(d) });
             fecharModal('modal-funcionario'); carregarFuncionarios();
         });
-        async function excluirFuncionario(id) { if(confirm("Excluir?")) { await fetch(`${API_URL}/api/funcionarios/${id}`, { method: 'DELETE' }); carregarFuncionarios(); } }
+        async function excluirFuncionario(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/funcionarios/${id}`, { method: 'DELETE' }); carregarFuncionarios(); } }
 
         // --- PRODUTOS ---
         function abrirModalProduto(id = null) { 
@@ -270,7 +292,7 @@
         }
         async function carregarProdutos() {
             try {
-                const res = await fetch(`${API_URL}/api/produtos`); produtosData = await res.json();
+                const res = await fetchComAutenticacao(`${API_URL}/api/produtos`); produtosData = await res.json();
                 document.getElementById('total-prod-sub').innerText = `${produtosData.length} produtos cadastrados`;
                 const baixos = produtosData.filter(p => p.estoque < p.estoque_minimo);
                 if(baixos.length > 0) { document.getElementById('alerta-estoque').style.display = 'flex'; document.getElementById('texto-alerta-estoque').innerText = `${baixos.length} produto(s) com estoque abaixo do mínimo`; } 
@@ -293,10 +315,10 @@
         }
         document.getElementById('formProd').addEventListener('submit', async (e) => {
             e.preventDefault(); const d = { codigo: document.getElementById('p_codigo').value, codigo_barras: document.getElementById('p_barras').value, nome: document.getElementById('p_nome').value, descricao: document.getElementById('p_desc').value, categoria: document.getElementById('p_cat').value, marca: document.getElementById('p_marca').value, unidade: document.getElementById('p_un').value, preco_custo: document.getElementById('p_custo').value, preco_venda: document.getElementById('p_venda').value, estoque: document.getElementById('p_estoque').value, estoque_minimo: document.getElementById('p_minimo').value, localizacao: document.getElementById('p_local').value, imagem_url: document.getElementById('p_img').value, status: document.getElementById('p_status').value };
-            await fetch(idEditandoProduto ? `${API_URL}/api/produtos/${idEditandoProduto}` : `${API_URL}/api/produtos`, { method: idEditandoProduto ? 'PUT' : 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) });
+            await fetchComAutenticacao(idEditandoProduto ? `${API_URL}/api/produtos/${idEditandoProduto}` : `${API_URL}/api/produtos`, { method: idEditandoProduto ? 'PUT' : 'POST', body: JSON.stringify(d) });
             fecharModal('modal-produto'); carregarProdutos();
         });
-        async function excluirProduto(id) { if(confirm("Excluir?")) { await fetch(`${API_URL}/api/produtos/${id}`, { method: 'DELETE' }); carregarProdutos(); } }
+        async function excluirProduto(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/produtos/${id}`, { method: 'DELETE' }); carregarProdutos(); } }
 
         window.onload = () => {
             const userName = localStorage.getItem('usuarioNome');
@@ -307,6 +329,9 @@
             carregarClientes(); 
             new Chart(document.getElementById('lineChart'), { type: 'line', data: { labels: ['Jan','Fev','Mar','Abr','Mai'], datasets: [{ label: 'R$', data: [15,30,12,20,45], borderColor: '#1e3a8a', tension: 0.4, fill: false }] } });
             new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['Chaveiro','Alarmes'], datasets: [{ data: [70,30], backgroundColor: ['#1e3a8a','#fbbf24'], borderWidth: 0 }] }, options: { cutout: '70%' } });
+            
+            // Corrige o botão de logout para apagar a memória local
+            document.querySelector('.bx-log-out').onclick = fazerLogout;
         }
 
         // MÁSCARAS
