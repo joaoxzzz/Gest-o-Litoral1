@@ -39,50 +39,21 @@
         <section id="view-dashboard">
             <div class="header-title"><h1>Dashboard</h1><p>Visão geral do sistema</p></div>
             <div class="kpi-grid">
-                <div class="card">
-                    <div class="kpi-icon kpi-green"><i class='bx bx-dollar'></i></div>
-                    <div class="card-label">Faturamento do Mês</div>
-                    <div class="card-value" id="dash-faturamento">R$ 0,00</div>
-                </div>
-                <div class="card">
-                    <div class="kpi-icon kpi-yellow"><i class='bx bx-wrench'></i></div>
-                    <div class="card-label">OS Pendentes</div>
-                    <div class="card-value" id="dash-os-pendentes">0</div>
-                </div>
-                <div class="card">
-                    <div class="kpi-icon kpi-blue"><i class='bx bx-group'></i></div>
-                    <div class="card-label">Clientes Ativos</div>
-                    <div class="card-value" id="dash-clientes">0</div>
-                </div>
-                <div class="card">
-                    <div class="kpi-icon kpi-red"><i class='bx bx-cube'></i></div>
-                    <div class="card-label">Estoque Baixo</div>
-                    <div class="card-value" id="dash-estoque">0</div>
-                </div>
+                <div class="card"><div class="kpi-icon kpi-green"><i class='bx bx-dollar'></i></div><div class="card-label">Faturamento do Mês</div><div class="card-value" id="dash-faturamento">R$ 0,00</div></div>
+                <div class="card"><div class="kpi-icon kpi-yellow"><i class='bx bx-wrench'></i></div><div class="card-label">OS Pendentes</div><div class="card-value" id="dash-os-pendentes">0</div></div>
+                <div class="card"><div class="kpi-icon kpi-blue"><i class='bx bx-group'></i></div><div class="card-label">Clientes Ativos</div><div class="card-value" id="dash-clientes">0</div></div>
+                <div class="card"><div class="kpi-icon kpi-red"><i class='bx bx-cube'></i></div><div class="card-label">Estoque Baixo</div><div class="card-value" id="dash-estoque">0</div></div>
             </div>
-            
             <div class="charts-grid">
                 <div class="chart-container"><h3>Faturamento Mensal</h3><canvas id="lineChart" style="margin-top:20px;"></canvas></div>
                 <div class="chart-container"><h3>Serviços por Tipo</h3><div style="height:220px; display:flex; justify-content:center; margin-top:20px;"><canvas id="doughnutChart"></canvas></div></div>
             </div>
-
             <div class="charts-grid" style="margin-top: 20px;">
                 <div class="chart-container">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                        <h3>Ordens de Serviço Recentes</h3>
-                        <a href="#" style="color:#3b82f6; text-decoration:none; font-size:0.9rem;" onclick="navegar('os', document.querySelectorAll('.nav-item')[5])">Ver todas &rarr;</a>
-                    </div>
-                    <div class="os-recent-list" id="dash-os-recentes">
-                        <p style="color:#94a3b8; text-align:center; padding:20px;">Nenhuma OS recente</p>
-                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;"><h3>Ordens de Serviço Recentes</h3><a href="#" style="color:#3b82f6; text-decoration:none; font-size:0.9rem;" onclick="navegar('os', document.querySelectorAll('.nav-item')[5])">Ver todas &rarr;</a></div>
+                    <div class="os-recent-list" id="dash-os-recentes"><p style="color:#94a3b8; text-align:center; padding:20px;">Nenhuma OS recente</p></div>
                 </div>
-                <div class="chart-container">
-                    <h3>Contas a Receber</h3>
-                    <div style="text-align: center; color: #94a3b8; padding: 40px 0;">
-                        <i class='bx bx-dollar' style="font-size: 3rem; color: #cbd5e1; margin-bottom: 10px; display:block;"></i>
-                        Nenhuma conta pendente
-                    </div>
-                </div>
+                <div class="chart-container"><h3>Contas a Receber</h3><div style="text-align: center; color: #94a3b8; padding: 40px 0;"><i class='bx bx-dollar' style="font-size: 3rem; color: #cbd5e1; margin-bottom: 10px; display:block;"></i>Nenhuma conta pendente</div></div>
             </div>
         </section>
 
@@ -110,6 +81,7 @@
                 <button class="btn-new" onclick="abrirModalProduto()"><i class='bx bx-plus'></i> Novo Produto</button>
             </div>
             <div id="alerta-estoque" class="alert-warning" style="display: none;"><i class='bx bx-error-alt' style="font-size: 1.5rem;"></i><span id="texto-alerta-estoque">0 produto(s) com estoque abaixo do mínimo</span></div>
+            <div class="toolbar"><div class="filter-tabs" id="abas-categorias" style="background: transparent; padding: 0;"></div></div>
             <div style="margin-bottom: 20px;"><div class="search-bar" style="width: 400px;"><i class='bx bx-search' style="color: #94a3b8;"></i><input type="text" placeholder="Buscar produto..."></div></div>
             <div class="table-container"><table><thead><tr><th>Produto</th><th>Categoria</th><th>Estoque</th><th>Preços</th><th>Status</th><th>Ações</th></tr></thead><tbody id="lista-produtos-body"></tbody></table></div>
         </section>
@@ -117,71 +89,146 @@
         <section id="view-os" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div class="header-title"><h1>Ordens de Serviço</h1><p id="total-os-sub">0 OS registradas</p></div>
-                <button class="btn-new" style="background: #1e3a8a;" onclick="abrirModalOS()"><i class='bx bx-plus'></i> Nova Ordem de Serviço</button>
+                <button class="btn-new" onclick="abrirModalOS()"><i class='bx bx-plus'></i> Nova Ordem de Serviço</button>
             </div>
             <div style="margin-bottom: 20px;"><div class="search-bar" style="width: 400px;"><i class='bx bx-search'></i><input type="text" placeholder="Buscar por cliente ou Nº da OS..."></div></div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Nº OS / Data</th><th>Cliente</th><th>Técnico</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-os-body"></tbody>
-                </table>
-            </div>
+            <div class="table-container"><table><thead><tr><th>Nº OS / Data</th><th>Cliente</th><th>Técnico</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="lista-os-body"></tbody></table></div>
         </section>
     </main>
 
-    <div id="modal-cliente" class="modal-overlay"> <div class="modal-content"><div class="modal-header"><h3 id="titulo-modal-cliente">Novo Cliente</h3><i class='bx bx-x' style="cursor: pointer;" onclick="fecharModal('modal-cliente')"></i></div><form id="formCli"><div class="modal-body"><div class="form-grid"><div class="form-group"><label>Tipo</label><select id="c_tipo" class="form-select"><option value="Fisica">Pessoa Física</option><option value="Juridica">Pessoa Jurídica</option></select></div><div class="form-group"><label>Status</label><select id="c_status" class="form-select"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div><div class="form-group full-width"><label>Nome / Razão Social *</label><input type="text" id="c_nome" class="form-input" required></div><div class="form-group"><label>CPF / CNPJ</label><input type="text" id="c_doc" class="form-input"></div><div class="form-group"><label>RG / IE</label><input type="text" id="c_rg" class="form-input"></div><div class="form-group"><label>Email</label><input type="email" id="c_email" class="form-input"></div><div class="form-group"><label>Telefone</label><input type="text" id="c_tel" class="form-input"></div><div class="form-group full-width"><label>WhatsApp</label><input type="text" id="c_whats" class="form-input"></div><div class="form-group full-width"><label>Endereço</label><input type="text" id="c_end" class="form-input"></div><div class="form-group"><label>Cidade</label><input type="text" id="c_cidade" class="form-input"></div><div class="form-group"><label>Estado</label><input type="text" id="c_uf" class="form-input"></div><div class="form-group"><label>CEP</label><input type="text" id="c_cep" class="form-input"></div><div class="form-group full-width"><label>Observações</label><textarea id="c_obs" class="form-textarea"></textarea></div></div></div><div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-cliente')">Cancelar</button><button type="submit" class="btn-save">Salvar</button></div></form></div>
+    <div id="modal-cliente" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="titulo-modal-cliente">Novo Cliente</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-cliente')"></i></div>
+            <form id="formCli">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Tipo</label><select id="c_tipo" class="form-select"><option value="Fisica">Pessoa Física</option><option value="Juridica">Pessoa Jurídica</option></select></div>
+                        <div class="form-group"><label>Status</label><select id="c_status" class="form-select"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+                        <div class="form-group full-width"><label>Nome / Razão Social *</label><input type="text" id="c_nome" class="form-input" required></div>
+                        <div class="form-group"><label>CPF / CNPJ</label><input type="text" id="c_doc" class="form-input"></div>
+                        <div class="form-group"><label>RG / IE</label><input type="text" id="c_rg" class="form-input"></div>
+                        <div class="form-group"><label>Email</label><input type="email" id="c_email" class="form-input"></div>
+                        <div class="form-group"><label>Telefone</label><input type="text" id="c_tel" class="form-input"></div>
+                        <div class="form-group full-width"><label>WhatsApp</label><input type="text" id="c_whats" class="form-input"></div>
+                        <div class="form-group full-width"><label>Endereço</label><input type="text" id="c_end" class="form-input"></div>
+                        <div class="form-group full-width" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px;">
+                            <div class="form-group"><label>Cidade</label><input type="text" id="c_cidade" class="form-input"></div>
+                            <div class="form-group"><label>Estado</label><input type="text" id="c_uf" class="form-input"></div>
+                            <div class="form-group"><label>CEP</label><input type="text" id="c_cep" class="form-input"></div>
+                        </div>
+                        <div class="form-group full-width"><label>Observações</label><textarea id="c_obs" class="form-textarea"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-cliente')">Cancelar</button><button type="submit" class="btn-save">Salvar</button></div>
+            </form>
+        </div>
     </div>
+
+    <div id="modal-fornecedor" class="modal-overlay">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header"><h3 id="titulo-modal-forn">Novo Fornecedor</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-fornecedor')"></i></div>
+            <form id="formForn">
+                <div class="modal-body">
+                    <div class="form-grid" style="grid-template-columns: 1fr;">
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div><label>Categoria</label><select id="f_cat" class="form-select"><option>Equipamentos</option><option>Serviços</option><option>Peças</option><option>Diversos</option></select></div>
+                            <div><label>Status</label><select id="f_status" class="form-select"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+                        </div>
+                        <div class="form-group"><label>Nome / Razão Social *</label><input type="text" id="f_nome" class="form-input" required></div>
+                        <div class="form-group"><label>CNPJ / CPF</label><input type="text" id="f_doc" class="form-input"></div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div><label>Telefone</label><input type="text" id="f_tel" class="form-input"></div>
+                            <div><label>Email</label><input type="email" id="f_email" class="form-input"></div>
+                        </div>
+                        <div class="form-group"><label>Observações</label><textarea id="f_obs" class="form-textarea"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-fornecedor')">Cancelar</button><button type="submit" class="btn-save">Salvar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-funcionario" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="titulo-modal-func">Novo Funcionário</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-funcionario')"></i></div>
+            <form id="formFunc">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group full-width"><label>Nome Completo *</label><input type="text" id="func_nome" class="form-input" required></div>
+                        <div class="form-group"><label>CPF *</label><input type="text" id="func_cpf" class="form-input" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="func_rg" class="form-input"></div>
+                        <div class="form-group"><label>Data de Nascimento</label><input type="date" id="func_nasc" class="form-input"></div>
+                        <div class="form-group"><label>Data de Admissão</label><input type="date" id="func_adm" class="form-input"></div>
+                        <div class="form-group"><label>Cargo *</label><select id="func_cargo" class="form-select" required><option value="">Selecione</option><option value="Vendedor">Vendedor</option><option value="Técnico de Loja">Técnico de Loja</option><option value="Gerente">Gerente</option><option value="Administrativo">Administrativo</option></select></div>
+                        <div class="form-group"><label>Status</label><select id="func_status" class="form-select"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+                        <div class="form-group"><label>Email</label><input type="email" id="func_email" class="form-input"></div>
+                        <div class="form-group"><label>Telefone</label><input type="text" id="func_tel" class="form-input"></div>
+                        <div class="form-group full-width"><label>Endereço</label><input type="text" id="func_end" class="form-input"></div>
+                        <div class="form-group full-width" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px;">
+                            <div class="form-group"><label>Cidade</label><input type="text" id="func_cidade" class="form-input"></div>
+                            <div class="form-group"><label>Estado</label><input type="text" id="func_uf" class="form-input"></div>
+                            <div class="form-group"><label>CEP</label><input type="text" id="func_cep" class="form-input"></div>
+                        </div>
+                        <div class="form-group"><label>Salário</label><input type="text" id="func_salario" class="form-input" placeholder="R$ 0,00"></div>
+                        <div class="form-group"><label>Comissão (%)</label><input type="text" id="func_comissao" class="form-input" placeholder="0%"></div>
+                        <div class="form-group full-width"><label>Observações</label><textarea id="func_obs" class="form-textarea"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-funcionario')">Cancelar</button><button type="submit" class="btn-save">Cadastrar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-produto" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="titulo-modal-prod">Novo Produto</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-produto')"></i></div>
+            <form id="formProd">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Código</label><input type="text" id="p_codigo" class="form-input"></div>
+                        <div class="form-group"><label>Código de Barras</label><input type="text" id="p_barras" class="form-input"></div>
+                        <div class="form-group full-width"><label>Nome do Produto *</label><input type="text" id="p_nome" class="form-input" required></div>
+                        <div class="form-group full-width"><label>Descrição</label><textarea id="p_desc" class="form-textarea" style="min-height: 60px;"></textarea></div>
+                        <div class="form-group"><label>Categoria *</label><input type="text" id="p_cat" class="form-input" list="lista-categorias" placeholder="Ex: Chaves..." required><datalist id="lista-categorias"></datalist></div>
+                        <div class="form-group"><label>Marca</label><input type="text" id="p_marca" class="form-input"></div>
+                        <div class="form-group"><label>Unidade</label><select id="p_un" class="form-select"><option>Unidade</option><option>Caixa</option><option>Kg</option><option>Metro</option></select></div>
+                        <div class="form-group"><label>Preço de Custo</label><input type="number" step="0.01" id="p_custo" class="form-input" placeholder="0.00"></div>
+                        <div class="form-group"><label>Preço de Venda *</label><input type="number" step="0.01" id="p_venda" class="form-input" placeholder="0.00" required></div>
+                        <div class="form-group"><label>Qtd em Estoque</label><input type="number" id="p_estoque" class="form-input" value="0"></div>
+                        <div class="form-group"><label>Estoque Mínimo</label><input type="number" id="p_minimo" class="form-input" value="0"></div>
+                        <div class="form-group"><label>Localização</label><input type="text" id="p_local" class="form-input" placeholder="Ex: A1-P2"></div>
+                        <div class="form-group full-width" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                            <div class="form-group"><label>URL da Imagem</label><input type="text" id="p_img" class="form-input"></div>
+                            <div class="form-group"><label>Status</label><select id="p_status" class="form-select"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn-cancel" onclick="fecharModal('modal-produto')">Cancelar</button><button type="submit" class="btn-save">Cadastrar</button></div>
+            </form>
+        </div>
+    </div>
+
     <div id="modal-os" class="modal-overlay">
         <div class="modal-content" style="width: 800px;">
             <div class="modal-header"><h3 id="titulo-modal-os">Nova Ordem de Serviço</h3><i class='bx bx-x' style="font-size: 1.5rem; cursor: pointer; color: #64748b;" onclick="fecharModal('modal-os')"></i></div>
             <form id="formOS">
                 <div class="modal-body">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Cliente *</label>
-                            <select id="os_cliente" class="form-select" required><option value="">Selecione o cliente</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Técnico Responsável</label>
-                            <select id="os_tecnico" class="form-select"><option value="">Selecione o técnico</option></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Tipo de Serviço *</label>
-                            <select id="os_tipo" class="form-select" required>
-                                <option value="Chaveiro">Chaveiro</option>
-                                <option value="Fechadura Digital">Fechadura Digital</option>
-                                <option value="Alarme">Alarme</option>
-                                <option value="Câmera de Segurança">Câmera de Segurança</option>
-                                <option value="Manutenção">Manutenção Geral</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div>
-                                <label>Prioridade</label>
-                                <select id="os_prioridade" class="form-select"><option>Normal</option><option>Alta</option><option>Urgente</option></select>
-                            </div>
-                            <div>
-                                <label>Status</label>
-                                <select id="os_status" class="form-select"><option value="Aberta">Aberta</option><option value="Em Andamento">Em Andamento</option><option value="Concluída">Concluída</option><option value="Cancelada">Cancelada</option></select>
-                            </div>
-                        </div>
-
+                        <div class="form-group"><label>Cliente *</label><select id="os_cliente" class="form-select" required><option value="">Selecione o cliente</option></select></div>
+                        <div class="form-group"><label>Técnico Responsável</label><select id="os_tecnico" class="form-select"><option value="">Selecione o técnico</option></select></div>
+                        <div class="form-group"><label>Tipo de Serviço *</label><select id="os_tipo" class="form-select" required><option value="Chaveiro">Chaveiro</option><option value="Fechadura Digital">Fechadura Digital</option><option value="Alarme">Alarme</option><option value="Câmera de Segurança">Câmera de Segurança</option><option value="Manutenção">Manutenção Geral</option></select></div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><div><label>Prioridade</label><select id="os_prioridade" class="form-select"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div><div><label>Status</label><select id="os_status" class="form-select"><option value="Aberta">Aberta</option><option value="Em Andamento">Em Andamento</option><option value="Concluída">Concluída</option><option value="Cancelada">Cancelada</option></select></div></div>
                         <div class="form-group"><label>Data Agendada</label><input type="datetime-local" id="os_data" class="form-input"></div>
                         <div class="form-group"><label>Endereço do Serviço</label><input type="text" id="os_end" class="form-input" placeholder="Onde o serviço será feito"></div>
-
                         <div class="form-group full-width"><label>Descrição do Serviço *</label><textarea id="os_desc" class="form-textarea" required></textarea></div>
                         <div class="form-group"><label>Diagnóstico</label><textarea id="os_diag" class="form-textarea" style="min-height: 50px;"></textarea></div>
                         <div class="form-group"><label>Solução Aplicada</label><textarea id="os_sol" class="form-textarea" style="min-height: 50px;"></textarea></div>
-                        
-                        <div class="form-group full-width"><label>Produtos Utilizados e Quantidades</label><textarea id="os_prod" class="form-textarea" style="min-height: 50px;" placeholder="Ex: 1x Fechadura Yale, 2x Chaves Cópia..."></textarea></div>
-
+                        <div class="form-group full-width"><label>Produtos Utilizados</label><textarea id="os_prod" class="form-textarea" style="min-height: 50px;" placeholder="Ex: 1x Fechadura Yale"></textarea></div>
                         <div class="form-group full-width" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; background: #f8fafc; padding: 15px; border-radius: 8px;">
                             <div class="form-group"><label>Mão de Obra (R$)</label><input type="number" step="0.01" id="os_mo" class="form-input" value="0.00" oninput="calcularTotalOS()"></div>
                             <div class="form-group"><label>Desconto (R$)</label><input type="number" step="0.01" id="os_desc_val" class="form-input" value="0.00" oninput="calcularTotalOS()"></div>
                             <div class="form-group"><label>Total a Cobrar</label><input type="text" id="os_total" class="form-input" style="background:#e2e8f0; font-weight:bold;" readonly value="R$ 0,00"></div>
                         </div>
-
                         <div class="form-group"><label>Forma de Pagamento</label><select id="os_pag" class="form-select"><option>Selecione</option><option>PIX</option><option>Cartão de Crédito</option><option>Cartão de Débito</option><option>Dinheiro</option><option>Boleto</option></select></div>
                         <div class="form-group full-width"><label>Observações</label><textarea id="os_obs" class="form-textarea" style="min-height: 50px;"></textarea></div>
                     </div>
@@ -197,149 +244,119 @@
         if (!usuarioId) { window.location.href = 'index.html'; }
 
         function fazerLogout() { localStorage.clear(); window.location.href = 'index.html'; }
-        async function fetchComAutenticacao(url, options = {}) {
-            return fetch(url, { ...options, headers: { 'Content-Type': 'application/json', 'usuario-id': usuarioId }});
-        }
+        async function fetchComAutenticacao(url, options = {}) { return fetch(url, { ...options, headers: { 'Content-Type': 'application/json', 'usuario-id': usuarioId }}); }
 
         let clientesData = [], fornecedoresData = [], funcionariosData = [], produtosData = [], osData = [];
-        let idEditandoCliente = null, idEditandoOS = null;
+        let idEditandoCliente = null, idEditandoFornecedor = null, idEditandoFuncionario = null, idEditandoProduto = null, idEditandoOS = null;
+        let filtroAtivo = 'Todos';
 
         function navegar(tela, el) {
             document.querySelectorAll('section').forEach(s => s.style.display = 'none');
             document.querySelectorAll('.nav-item, .sub-item').forEach(e => e.classList.remove('active'));
             document.getElementById('view-' + tela).style.display = 'block';
             if(el) el.classList.add('active');
-            
-            // Carrega os dados correspondentes
             if(tela === 'dashboard') carregarDashboard();
             if(tela === 'clientes') carregarClientes();
+            if(tela === 'fornecedores') carregarFornecedores();
+            if(tela === 'funcionarios') carregarFuncionarios();
+            if(tela === 'produtos') carregarProdutos();
             if(tela === 'os') carregarOS();
         }
 
         function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleMenu() {
-            const m = document.getElementById('menu-cadastros'); const s = document.getElementById('seta-cadastros');
-            if(m.classList.contains('open')) { m.classList.remove('open'); s.classList.replace('bx-chevron-down', 'bx-chevron-left'); } 
-            else { m.classList.add('open'); s.classList.replace('bx-chevron-left', 'bx-chevron-down'); }
-        }
+        function toggleMenu() { const m = document.getElementById('menu-cadastros'); const s = document.getElementById('seta-cadastros'); if(m.classList.contains('open')) { m.classList.remove('open'); s.classList.replace('bx-chevron-down', 'bx-chevron-left'); } else { m.classList.add('open'); s.classList.replace('bx-chevron-left', 'bx-chevron-down'); } }
 
-        // --- WHATSAPP INTEGRAÇÃO ---
         function enviarWhatsApp(telefone, mensagem) {
-            if(!telefone) return alert("Cliente não possui telefone cadastrado!");
-            let num = telefone.replace(/\D/g, ""); // Tira () e traços
-            if(num.length === 10 || num.length === 11) num = "55" + num; // Adiciona código BR se faltar
+            if(!telefone) return alert("Telefone não cadastrado!");
+            let num = telefone.replace(/\D/g, ""); 
+            if(num.length === 10 || num.length === 11) num = "55" + num; 
             window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(mensagem)}`, '_blank');
         }
 
-        // --- DASHBOARD EM TEMPO REAL ---
+        // --- DASHBOARD ---
         async function carregarDashboard() {
-            // Busca as informações no banco
             const resC = await fetchComAutenticacao(`${API_URL}/api/clientes`); clientesData = await resC.json();
             const resP = await fetchComAutenticacao(`${API_URL}/api/produtos`); produtosData = await resP.json();
             const resO = await fetchComAutenticacao(`${API_URL}/api/os`); osData = await resO.json();
-
-            // Calcula Métricas
-            const clientesAtivos = clientesData.filter(c => c.status === 'Ativo').length;
-            const estoqueBaixo = produtosData.filter(p => p.estoque < p.estoque_minimo).length;
-            const osPendentes = osData.filter(o => o.status !== 'Concluída' && o.status !== 'Cancelada').length;
+            document.getElementById('dash-clientes').innerText = clientesData.filter(c => c.status === 'Ativo').length;
+            document.getElementById('dash-estoque').innerText = produtosData.filter(p => p.estoque < p.estoque_minimo).length;
+            document.getElementById('dash-os-pendentes').innerText = osData.filter(o => o.status !== 'Concluída' && o.status !== 'Cancelada').length;
+            document.getElementById('dash-faturamento').innerText = osData.filter(o => o.status === 'Concluída').reduce((acc, curr) => acc + parseFloat(curr.total || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             
-            // Faturamento: Soma o total das OS concluídas
-            const faturamento = osData.filter(o => o.status === 'Concluída').reduce((acc, curr) => acc + parseFloat(curr.total || 0), 0);
-
-            // Atualiza HTML
-            document.getElementById('dash-clientes').innerText = clientesAtivos;
-            document.getElementById('dash-estoque').innerText = estoqueBaixo;
-            document.getElementById('dash-os-pendentes').innerText = osPendentes;
-            document.getElementById('dash-faturamento').innerText = faturamento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-            // Atualiza OS Recentes na tela principal (Pega as 3 últimas)
             const recentes = osData.slice(0, 3);
             const listaRecentes = document.getElementById('dash-os-recentes');
             if(recentes.length > 0) {
                 listaRecentes.innerHTML = recentes.map(o => {
                     const corStatus = o.status === 'Aberta' ? '#3b82f6' : o.status === 'Concluída' ? '#10b981' : '#f59e0b';
-                    return `
-                    <div class="os-card">
-                        <div>
-                            <div class="os-card-title">#OS${o.id.toString().padStart(4, '0')} <span style="background:${corStatus}20; color:${corStatus}; padding:2px 8px; border-radius:12px; font-size:0.7rem; margin-left:10px;">${o.status}</span></div>
-                            <div class="os-card-sub"><i class='bx bx-user'></i> ${o.cliente_nome}</div>
-                        </div>
-                        <div class="os-card-price">R$ ${parseFloat(o.total||0).toFixed(2).replace('.',',')}</div>
-                    </div>`;
+                    return `<div class="os-card"><div><div class="os-card-title">#OS${o.id.toString().padStart(4, '0')} <span style="background:${corStatus}20; color:${corStatus}; padding:2px 8px; border-radius:12px; font-size:0.7rem; margin-left:10px;">${o.status}</span></div><div class="os-card-sub"><i class='bx bx-user'></i> ${o.cliente_nome}</div></div><div class="os-card-price">R$ ${parseFloat(o.total||0).toFixed(2).replace('.',',')}</div></div>`;
                 }).join('');
             }
-
             atualizarGraficos();
         }
-
         let chartLinha, chartRosca;
         function atualizarGraficos() {
-            // Gráfico de Linha Moderno (Igual print)
             if(chartLinha) chartLinha.destroy();
             const ctxL = document.getElementById('lineChart').getContext('2d');
-            let gradient = ctxL.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-            
-            chartLinha = new Chart(ctxL, {
-                type: 'line',
-                data: { labels: ['Jan','Fev','Mar','Abr','Mai','Jun'], datasets: [{ label: 'R$', data: [25000, 65000, 45000, 40000, 50000, 30000], borderColor: '#1e3a8a', backgroundColor: gradient, fill: true, tension: 0.4, pointRadius: 0 }] },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { borderDash: [5, 5] } } } }
-            });
-
-            // Gráfico Rosca Colorido
+            let gradient = ctxL.createLinearGradient(0, 0, 0, 400); gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+            chartLinha = new Chart(ctxL, { type: 'line', data: { labels: ['Jan','Fev','Mar','Abr','Mai','Jun'], datasets: [{ label: 'R$', data: [25000, 65000, 45000, 40000, 50000, 30000], borderColor: '#1e3a8a', backgroundColor: gradient, fill: true, tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { borderDash: [5, 5] } } } } });
             if(chartRosca) chartRosca.destroy();
-            chartRosca = new Chart(document.getElementById('doughnutChart'), {
-                type: 'doughnut',
-                data: { labels: ['Chaveiro','Fechadura','Alarme','Câmera','Outros'], datasets: [{ data: [35, 20, 15, 20, 10], backgroundColor: ['#1e3a8a','#fbbf24','#10b981','#8b5cf6','#64748b'], borderWidth: 4, borderColor: '#ffffff' }] },
-                options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } } } }
-            });
+            chartRosca = new Chart(document.getElementById('doughnutChart'), { type: 'doughnut', data: { labels: ['Chaveiro','Fechadura','Alarme','Câmera','Outros'], datasets: [{ data: [35, 20, 15, 20, 10], backgroundColor: ['#1e3a8a','#fbbf24','#10b981','#8b5cf6','#64748b'], borderWidth: 4, borderColor: '#ffffff' }] }, options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } } } } });
         }
 
         // --- CLIENTES ---
-        async function carregarClientes() {
-            const res = await fetchComAutenticacao(`${API_URL}/api/clientes`); clientesData = await res.json();
-            document.getElementById('lista-clientes-body').innerHTML = clientesData.map(c => {
-                return `<tr><td><div class="user-cell"><div class="client-icon-box icon-business"><i class='bx bx-user'></i></div><div><div style="font-weight: 600;">${c.nome}</div><div style="font-size: 0.75rem;">${c.documento || '-'}</div></div></div></td>
-                <td><div style="font-size: 0.9rem;">${c.telefone||'-'}</div></td><td>${c.cidade || '-'}</td><td><span class="status-badge status-active">${c.status || 'Ativo'}</span></td>
-                <td>
-                    <button class="action-btn btn-wpp" onclick="enviarWhatsApp('${c.telefone || c.whatsapp}', 'Olá ${c.nome}, tudo bem?')"><i class='bx bxl-whatsapp'></i></button>
-                    <button class="action-btn" onclick="abrirModalCliente(${c.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirCliente(${c.id})"><i class='bx bx-trash'></i></button>
-                </td></tr>`;
-            }).join('');
+        function abrirModalCliente(id = null) { 
+            idEditandoCliente = id;
+            if(id) { const c = clientesData.find(x => x.id === id); document.getElementById('titulo-modal-cliente').innerText = "Editar Cliente"; document.getElementById('c_tipo').value = c.tipo; document.getElementById('c_status').value = c.status; document.getElementById('c_nome').value = c.nome; document.getElementById('c_doc').value = c.documento || ''; document.getElementById('c_rg').value = c.rg_ie || ''; document.getElementById('c_email').value = c.email || ''; document.getElementById('c_tel').value = c.telefone || ''; document.getElementById('c_whats').value = c.whatsapp || ''; document.getElementById('c_end').value = c.endereco || ''; document.getElementById('c_cidade').value = c.cidade || ''; document.getElementById('c_uf').value = c.estado || ''; document.getElementById('c_cep').value = c.cep || ''; document.getElementById('c_obs').value = c.observacoes || ''; } 
+            else { document.getElementById('titulo-modal-cliente').innerText = "Novo Cliente"; document.getElementById('formCli').reset(); }
+            document.getElementById('modal-cliente').style.display = 'flex'; 
         }
+        async function carregarClientes() {
+            try {
+                const res = await fetchComAutenticacao(`${API_URL}/api/clientes`); clientesData = await res.json();
+                document.getElementById('total-clientes-sub').innerText = `${clientesData.length} clientes cadastrados`;
+                document.getElementById('lista-clientes-body').innerHTML = clientesData.map(c => `<tr><td><div class="user-cell"><div class="client-icon-box ${c.tipo === 'Juridica' ? 'icon-business' : 'icon-person'}"><i class='bx ${c.tipo === 'Juridica' ? 'bx-building' : 'bx-user'}'></i></div><div><div style="font-weight: 600; color: #1e293b;">${c.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${c.documento || '-'}</div></div></div></td><td><div style="font-size: 0.9rem;">${c.telefone ? `<i class='bx bx-phone'></i> ${c.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${c.email || ''}</div></td><td><div style="display:flex; align-items:center; gap:5px; color:#64748b;"><i class='bx bx-map-pin'></i> ${c.cidade || '-'}</div></td><td><span class="status-badge ${c.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${c.status || 'Ativo'}</span></td><td><button class="action-btn btn-wpp" onclick="enviarWhatsApp('${c.telefone || c.whatsapp}', 'Olá ${c.nome}, tudo bem?')"><i class='bx bxl-whatsapp'></i></button><button class="action-btn" onclick="abrirModalCliente(${c.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirCliente(${c.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join('');
+            } catch (err) { console.error(err); }
+        }
+        document.getElementById('formCli').addEventListener('submit', async (e) => { e.preventDefault(); const d = { tipo: document.getElementById('c_tipo').value, status: document.getElementById('c_status').value, nome: document.getElementById('c_nome').value, documento: document.getElementById('c_doc').value, rg_ie: document.getElementById('c_rg').value, email: document.getElementById('c_email').value, telefone: document.getElementById('c_tel').value, whatsapp: document.getElementById('c_whats').value, endereco: document.getElementById('c_end').value, cidade: document.getElementById('c_cidade').value, estado: document.getElementById('c_uf').value, cep: document.getElementById('c_cep').value, observacoes: document.getElementById('c_obs').value }; await fetchComAutenticacao(idEditandoCliente ? `${API_URL}/api/clientes/${idEditandoCliente}` : `${API_URL}/api/clientes`, { method: idEditandoCliente ? 'PUT' : 'POST', body: JSON.stringify(d) }); fecharModal('modal-cliente'); carregarClientes(); });
+        async function excluirCliente(id) { if(confirm("Excluir cliente?")) { await fetchComAutenticacao(`${API_URL}/api/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
 
-        // --- ORDENS DE SERVIÇO (OS) ---
+        // --- FORNECEDORES ---
+        function abrirModalFornecedor(id = null) { idEditandoFornecedor = id; if(id) { const f = fornecedoresData.find(x => x.id === id); document.getElementById('titulo-modal-forn').innerText = "Editar Fornecedor"; document.getElementById('f_cat').value = f.categoria || 'Diversos'; document.getElementById('f_status').value = f.status; document.getElementById('f_nome').value = f.nome; document.getElementById('f_doc').value = f.documento || ''; document.getElementById('f_email').value = f.email || ''; document.getElementById('f_tel').value = f.telefone || ''; document.getElementById('f_obs').value = f.observacoes || ''; } else { document.getElementById('titulo-modal-forn').innerText = "Novo Fornecedor"; document.getElementById('formForn').reset(); } document.getElementById('modal-fornecedor').style.display = 'flex'; }
+        async function carregarFornecedores() { const res = await fetchComAutenticacao(`${API_URL}/api/fornecedores`); fornecedoresData = await res.json(); document.getElementById('lista-fornecedores-body').innerHTML = fornecedoresData.map(f => `<tr><td><div class="user-cell"><div class="client-icon-box" style="background:#f3f4f6; color:#475569;"><i class='bx bx-package'></i></div><div><div style="font-weight: 600; color: #1e293b;">${f.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${f.documento || '-'}</div></div></div></td><td><div style="font-size: 0.9rem;">${f.telefone ? `<i class='bx bx-phone'></i> ${f.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${f.email || ''}</div></td><td><div style="font-weight: 500; color:#64748b;">${f.categoria}</div></td><td><span class="status-badge ${f.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${f.status || 'Ativo'}</span></td><td><button class="action-btn" onclick="abrirModalFornecedor(${f.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirFornecedor(${f.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join(''); }
+        document.getElementById('formForn').addEventListener('submit', async (e) => { e.preventDefault(); const d = { categoria: document.getElementById('f_cat').value, status: document.getElementById('f_status').value, nome: document.getElementById('f_nome').value, documento: document.getElementById('f_doc').value, email: document.getElementById('f_email').value, telefone: document.getElementById('f_tel').value, observacoes: document.getElementById('f_obs').value }; await fetchComAutenticacao(idEditandoFornecedor ? `${API_URL}/api/fornecedores/${idEditandoFornecedor}` : `${API_URL}/api/fornecedores`, { method: idEditandoFornecedor ? 'PUT' : 'POST', body: JSON.stringify(d) }); fecharModal('modal-fornecedor'); carregarFornecedores(); });
+        async function excluirFornecedor(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/fornecedores/${id}`, { method: 'DELETE' }); carregarFornecedores(); } }
+
+        // --- FUNCIONÁRIOS ---
+        function abrirModalFuncionario(id = null) { idEditandoFuncionario = id; if(id) { const f = funcionariosData.find(x => x.id === id); document.getElementById('titulo-modal-func').innerText = "Editar Funcionário"; document.getElementById('func_nome').value = f.nome; document.getElementById('func_cpf').value = f.cpf || ''; document.getElementById('func_rg').value = f.rg || ''; document.getElementById('func_nasc').value = f.data_nascimento ? f.data_nascimento.split('T')[0] : ''; document.getElementById('func_adm').value = f.data_admissao ? f.data_admissao.split('T')[0] : ''; document.getElementById('func_cargo').value = f.cargo || ''; document.getElementById('func_status').value = f.status || 'Ativo'; document.getElementById('func_email').value = f.email || ''; document.getElementById('func_tel').value = f.telefone || ''; document.getElementById('func_end').value = f.endereco || ''; document.getElementById('func_cidade').value = f.cidade || ''; document.getElementById('func_uf').value = f.estado || ''; document.getElementById('func_cep').value = f.cep || ''; document.getElementById('func_salario').value = f.salario || ''; document.getElementById('func_comissao').value = f.comissao || ''; document.getElementById('func_obs').value = f.observacoes || ''; } else { document.getElementById('titulo-modal-func').innerText = "Novo Funcionário"; document.getElementById('formFunc').reset(); } document.getElementById('modal-funcionario').style.display = 'flex'; }
+        async function carregarFuncionarios() { const res = await fetchComAutenticacao(`${API_URL}/api/funcionarios`); funcionariosData = await res.json(); document.getElementById('lista-funcionarios-body').innerHTML = funcionariosData.map(f => `<tr><td><div class="user-cell"><div class="client-icon-box" style="background:#fef08a; color:#a16207; font-weight:bold; font-size:1.2rem;">${f.nome.charAt(0).toUpperCase()}</div><div><div style="font-weight: 600; color: #1e293b;">${f.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${f.cpf || '-'}</div></div></div></td><td><div style="display:flex; align-items:center; gap:5px; color:#64748b;"><i class='bx bx-briefcase'></i> ${f.cargo || '-'}</div></td><td><div style="font-size: 0.9rem;">${f.telefone ? `<i class='bx bx-phone'></i> ${f.telefone}` : '-'}</div><div style="font-size: 0.8rem; color: #64748b;">${f.email || ''}</div></td><td><span class="status-badge ${f.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${f.status || 'Ativo'}</span></td><td><button class="action-btn" onclick="abrirModalFuncionario(${f.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirFuncionario(${f.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join(''); }
+        document.getElementById('formFunc').addEventListener('submit', async (e) => { e.preventDefault(); const d = { nome: document.getElementById('func_nome').value, cpf: document.getElementById('func_cpf').value, rg: document.getElementById('func_rg').value, data_nascimento: document.getElementById('func_nasc').value, data_admissao: document.getElementById('func_adm').value, cargo: document.getElementById('func_cargo').value, status: document.getElementById('func_status').value, email: document.getElementById('func_email').value, telefone: document.getElementById('func_tel').value, endereco: document.getElementById('func_end').value, cidade: document.getElementById('func_cidade').value, estado: document.getElementById('func_uf').value, cep: document.getElementById('func_cep').value, salario: document.getElementById('func_salario').value, comissao: document.getElementById('func_comissao').value, observacoes: document.getElementById('func_obs').value }; await fetchComAutenticacao(idEditandoFuncionario ? `${API_URL}/api/funcionarios/${idEditandoFuncionario}` : `${API_URL}/api/funcionarios`, { method: idEditandoFuncionario ? 'PUT' : 'POST', body: JSON.stringify(d) }); fecharModal('modal-funcionario'); carregarFuncionarios(); });
+        async function excluirFuncionario(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/funcionarios/${id}`, { method: 'DELETE' }); carregarFuncionarios(); } }
+
+        // --- PRODUTOS ---
+        function abrirModalProduto(id = null) { idEditandoProduto = id; if(id) { const p = produtosData.find(x => x.id === id); document.getElementById('titulo-modal-prod').innerText = "Editar Produto"; document.getElementById('p_codigo').value = p.codigo || ''; document.getElementById('p_barras').value = p.codigo_barras || ''; document.getElementById('p_nome').value = p.nome; document.getElementById('p_desc').value = p.descricao || ''; document.getElementById('p_cat').value = p.categoria || ''; document.getElementById('p_marca').value = p.marca || ''; document.getElementById('p_un').value = p.unidade || 'Unidade'; document.getElementById('p_custo').value = p.preco_custo || ''; document.getElementById('p_venda').value = p.preco_venda || ''; document.getElementById('p_estoque').value = p.estoque || 0; document.getElementById('p_minimo').value = p.estoque_minimo || 0; document.getElementById('p_local').value = p.localizacao || ''; document.getElementById('p_img').value = p.imagem_url || ''; document.getElementById('p_status').value = p.status || 'Ativo'; } else { document.getElementById('titulo-modal-prod').innerText = "Novo Produto"; document.getElementById('formProd').reset(); } document.getElementById('modal-produto').style.display = 'flex'; }
+        async function carregarProdutos() {
+            const res = await fetchComAutenticacao(`${API_URL}/api/produtos`); produtosData = await res.json();
+            document.getElementById('total-prod-sub').innerText = `${produtosData.length} produtos cadastrados`;
+            const baixos = produtosData.filter(p => p.estoque < p.estoque_minimo);
+            if(baixos.length > 0) { document.getElementById('alerta-estoque').style.display = 'flex'; document.getElementById('texto-alerta-estoque').innerText = `${baixos.length} produto(s) com estoque abaixo do mínimo`; } else { document.getElementById('alerta-estoque').style.display = 'none'; }
+            const cats = [...new Set(produtosData.map(p => p.categoria).filter(c => c && c.trim() !== ''))];
+            document.getElementById('lista-categorias').innerHTML = cats.map(c => `<option value="${c}">`).join('');
+            document.getElementById('abas-categorias').innerHTML = `<button class="tab-btn ${filtroAtivo === 'Todos' ? 'active' : ''}" onclick="setFiltroProduto('Todos')">Todos</button><button class="tab-btn ${filtroAtivo === 'Estoque Baixo' ? 'active' : ''}" onclick="setFiltroProduto('Estoque Baixo')" style="color: #ea580c;">Estoque Baixo (${baixos.length})</button>` + cats.map(cat => `<button class="tab-btn ${filtroAtivo === cat ? 'active' : ''}" onclick="setFiltroProduto('${cat}')">${cat}</button>`).join('');
+            document.getElementById('lista-produtos-body').innerHTML = (filtroAtivo === 'Estoque Baixo' ? baixos : (filtroAtivo !== 'Todos' ? produtosData.filter(p => p.categoria === filtroAtivo) : produtosData)).map(p => `<tr><td><div class="user-cell"><div class="client-icon-box" style="background:#f1f5f9; color:#94a3b8;"><i class='bx bx-cube'></i></div><div><div style="font-weight: 600; color: #1e293b;">${p.nome}</div><div style="font-size: 0.75rem; color: #94a3b8;">${p.codigo || '-'}</div></div></div></td><td><div class="cat-tag"><i class='bx bx-tag'></i> ${p.categoria || 'Sem'}</div></td><td><div style="font-weight: 600;"><span class="${p.estoque < p.estoque_minimo ? 'stock-alert-text' : ''}">${p.estoque} un ${p.estoque < p.estoque_minimo ? "<i class='bx bx-error'></i>" : ""}</span></div></td><td><div class="prod-price-venda">${parseFloat(p.preco_venda||0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div><div class="prod-price-custo">Custo: ${parseFloat(p.preco_custo||0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div></td><td><span class="status-badge ${p.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${p.status || 'Ativo'}</span></td><td><button class="action-btn" onclick="abrirModalProduto(${p.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirProduto(${p.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`).join('');
+        }
+        function setFiltroProduto(filtro) { filtroAtivo = filtro; carregarProdutos(); }
+        document.getElementById('formProd').addEventListener('submit', async (e) => { e.preventDefault(); const d = { codigo: document.getElementById('p_codigo').value, codigo_barras: document.getElementById('p_barras').value, nome: document.getElementById('p_nome').value, descricao: document.getElementById('p_desc').value, categoria: document.getElementById('p_cat').value, marca: document.getElementById('p_marca').value, unidade: document.getElementById('p_un').value, preco_custo: document.getElementById('p_custo').value, preco_venda: document.getElementById('p_venda').value, estoque: document.getElementById('p_estoque').value, estoque_minimo: document.getElementById('p_minimo').value, localizacao: document.getElementById('p_local').value, imagem_url: document.getElementById('p_img').value, status: document.getElementById('p_status').value }; await fetchComAutenticacao(idEditandoProduto ? `${API_URL}/api/produtos/${idEditandoProduto}` : `${API_URL}/api/produtos`, { method: idEditandoProduto ? 'PUT' : 'POST', body: JSON.stringify(d) }); fecharModal('modal-produto'); carregarProdutos(); });
+        async function excluirProduto(id) { if(confirm("Excluir?")) { await fetchComAutenticacao(`${API_URL}/api/produtos/${id}`, { method: 'DELETE' }); carregarProdutos(); } }
+
+        // --- ORDENS DE SERVIÇO ---
         async function prepararModalOS() {
-            // Puxa clientes e funcionários para os Dropdowns
             const rC = await fetchComAutenticacao(`${API_URL}/api/clientes`); clientesData = await rC.json();
             const rF = await fetchComAutenticacao(`${API_URL}/api/funcionarios`); funcionariosData = await rF.json();
-            
             document.getElementById('os_cliente').innerHTML = `<option value="">Selecione o cliente</option>` + clientesData.map(c => `<option value="${c.nome}|${c.telefone}">${c.nome}</option>`).join('');
             document.getElementById('os_tecnico').innerHTML = `<option value="">Selecione o técnico</option>` + funcionariosData.map(f => `<option value="${f.nome}">${f.nome}</option>`).join('');
         }
-
-        function calcularTotalOS() {
-            const mo = parseFloat(document.getElementById('os_mo').value) || 0;
-            const desc = parseFloat(document.getElementById('os_desc_val').value) || 0;
-            const total = mo - desc;
-            document.getElementById('os_total').value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-
-        async function abrirModalOS(id = null) { 
-            await prepararModalOS();
-            idEditandoOS = id;
-            if(id) { 
-                const o = osData.find(x => x.id === id); document.getElementById('titulo-modal-os').innerText = "Editar Ordem de Serviço";
-                document.getElementById('os_cliente').value = `${o.cliente_nome}|${o.cliente_telefone}`; document.getElementById('os_tecnico').value = o.tecnico_nome || '';
-                document.getElementById('os_tipo').value = o.tipo_servico || ''; document.getElementById('os_prioridade').value = o.prioridade || 'Normal'; document.getElementById('os_status').value = o.status || 'Aberta';
-                document.getElementById('os_data').value = o.data_agendada || ''; document.getElementById('os_end').value = o.endereco_servico || ''; document.getElementById('os_desc').value = o.descricao || '';
-                document.getElementById('os_diag').value = o.diagnostico || ''; document.getElementById('os_sol').value = o.solucao || ''; document.getElementById('os_prod').value = o.produtos_utilizados || '';
-                document.getElementById('os_mo').value = o.mao_de_obra || 0; document.getElementById('os_desc_val').value = o.desconto || 0; document.getElementById('os_pag').value = o.forma_pagamento || ''; document.getElementById('os_obs').value = o.observacoes || '';
-                calcularTotalOS();
-            } else { document.getElementById('titulo-modal-os').innerText = "Nova Ordem de Serviço"; document.getElementById('formOS').reset(); calcularTotalOS(); }
-            document.getElementById('modal-os').style.display = 'flex'; 
-        }
-
+        function calcularTotalOS() { const mo = parseFloat(document.getElementById('os_mo').value) || 0; const desc = parseFloat(document.getElementById('os_desc_val').value) || 0; document.getElementById('os_total').value = (mo - desc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+        async function abrirModalOS(id = null) { await prepararModalOS(); idEditandoOS = id; if(id) { const o = osData.find(x => x.id === id); document.getElementById('titulo-modal-os').innerText = "Editar Ordem de Serviço"; document.getElementById('os_cliente').value = `${o.cliente_nome}|${o.cliente_telefone}`; document.getElementById('os_tecnico').value = o.tecnico_nome || ''; document.getElementById('os_tipo').value = o.tipo_servico || ''; document.getElementById('os_prioridade').value = o.prioridade || 'Normal'; document.getElementById('os_status').value = o.status || 'Aberta'; document.getElementById('os_data').value = o.data_agendada || ''; document.getElementById('os_end').value = o.endereco_servico || ''; document.getElementById('os_desc').value = o.descricao || ''; document.getElementById('os_diag').value = o.diagnostico || ''; document.getElementById('os_sol').value = o.solucao || ''; document.getElementById('os_prod').value = o.produtos_utilizados || ''; document.getElementById('os_mo').value = o.mao_de_obra || 0; document.getElementById('os_desc_val').value = o.desconto || 0; document.getElementById('os_pag').value = o.forma_pagamento || ''; document.getElementById('os_obs').value = o.observacoes || ''; calcularTotalOS(); } else { document.getElementById('titulo-modal-os').innerText = "Nova Ordem de Serviço"; document.getElementById('formOS').reset(); calcularTotalOS(); } document.getElementById('modal-os').style.display = 'flex'; }
         async function carregarOS() {
             try {
                 const res = await fetchComAutenticacao(`${API_URL}/api/os`); osData = await res.json();
@@ -348,55 +365,26 @@
                     const statusClass = o.status === 'Aberta' ? 'status-aberta' : o.status === 'Concluída' ? 'status-active' : o.status === 'Em Andamento' ? 'status-andamento' : 'status-inactive';
                     const numOS = `#OS${o.id.toString().padStart(4, '0')}`;
                     const dta = o.data_agendada ? new Date(o.data_agendada).toLocaleDateString('pt-BR') : '-';
-                    const tel = o.cliente_telefone || '';
                     const msgZap = `Olá ${o.cliente_nome}, sua Ordem de Serviço ${numOS} sobre "${o.tipo_servico}" está com o status: *${o.status}*.`;
-                    
-                    return `<tr>
-                        <td><div style="font-weight:700; color:#1e3a8a;">${numOS}</div><div style="font-size:0.8rem; color:#64748b;">${dta}</div></td>
-                        <td><div style="font-weight:600;">${o.cliente_nome}</div><div style="font-size:0.75rem;">${o.tipo_servico}</div></td>
-                        <td>${o.tecnico_nome || '-'}</td>
-                        <td><span class="status-badge ${statusClass}">${o.status}</span></td>
-                        <td style="font-weight:600;">R$ ${parseFloat(o.total||0).toFixed(2).replace('.',',')}</td>
-                        <td>
-                            <button class="action-btn btn-wpp" onclick="enviarWhatsApp('${tel}', '${msgZap}')"><i class='bx bxl-whatsapp'></i></button>
-                            <button class="action-btn" onclick="abrirModalOS(${o.id})"><i class='bx bx-edit-alt'></i></button>
-                            <button class="action-btn" onclick="excluirOS(${o.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button>
-                        </td>
-                    </tr>`;
+                    return `<tr><td><div style="font-weight:700; color:#1e3a8a;">${numOS}</div><div style="font-size:0.8rem; color:#64748b;">${dta}</div></td><td><div style="font-weight:600;">${o.cliente_nome}</div><div style="font-size:0.75rem;">${o.tipo_servico}</div></td><td>${o.tecnico_nome || '-'}</td><td><span class="status-badge ${statusClass}">${o.status}</span></td><td style="font-weight:600;">R$ ${parseFloat(o.total||0).toFixed(2).replace('.',',')}</td><td><button class="action-btn btn-wpp" onclick="enviarWhatsApp('${o.cliente_telefone || ''}', '${msgZap}')"><i class='bx bxl-whatsapp'></i></button><button class="action-btn" onclick="abrirModalOS(${o.id})"><i class='bx bx-edit-alt'></i></button><button class="action-btn" onclick="excluirOS(${o.id})"><i class='bx bx-trash' style="color: #ef4444;"></i></button></td></tr>`;
                 }).join('');
             } catch (err) { console.error(err); }
         }
-
-        document.getElementById('formOS').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            // Pega o nome e telefone do select do cliente
-            const clInfo = document.getElementById('os_cliente').value.split('|');
-            
-            const mo = parseFloat(document.getElementById('os_mo').value) || 0;
-            const desc = parseFloat(document.getElementById('os_desc_val').value) || 0;
-
-            const d = { 
-                cliente_nome: clInfo[0], cliente_telefone: clInfo[1], tecnico_nome: document.getElementById('os_tecnico').value, 
-                tipo_servico: document.getElementById('os_tipo').value, prioridade: document.getElementById('os_prioridade').value, status: document.getElementById('os_status').value, 
-                data_agendada: document.getElementById('os_data').value, endereco_servico: document.getElementById('os_end').value, descricao: document.getElementById('os_desc').value, 
-                diagnostico: document.getElementById('os_diag').value, solucao: document.getElementById('os_sol').value, produtos_utilizados: document.getElementById('os_prod').value, 
-                mao_de_obra: mo, desconto: desc, total: (mo - desc), forma_pagamento: document.getElementById('os_pag').value, observacoes: document.getElementById('os_obs').value 
-            };
-            
-            await fetchComAutenticacao(idEditandoOS ? `${API_URL}/api/os/${idEditandoOS}` : `${API_URL}/api/os`, { method: idEditandoOS ? 'PUT' : 'POST', body: JSON.stringify(d) });
-            fecharModal('modal-os'); carregarOS();
-        });
-
+        document.getElementById('formOS').addEventListener('submit', async (e) => { e.preventDefault(); const clInfo = document.getElementById('os_cliente').value.split('|'); const mo = parseFloat(document.getElementById('os_mo').value) || 0; const desc = parseFloat(document.getElementById('os_desc_val').value) || 0; const d = { cliente_nome: clInfo[0], cliente_telefone: clInfo[1], tecnico_nome: document.getElementById('os_tecnico').value, tipo_servico: document.getElementById('os_tipo').value, prioridade: document.getElementById('os_prioridade').value, status: document.getElementById('os_status').value, data_agendada: document.getElementById('os_data').value, endereco_servico: document.getElementById('os_end').value, descricao: document.getElementById('os_desc').value, diagnostico: document.getElementById('os_diag').value, solucao: document.getElementById('os_sol').value, produtos_utilizados: document.getElementById('os_prod').value, mao_de_obra: mo, desconto: desc, total: (mo - desc), forma_pagamento: document.getElementById('os_pag').value, observacoes: document.getElementById('os_obs').value }; await fetchComAutenticacao(idEditandoOS ? `${API_URL}/api/os/${idEditandoOS}` : `${API_URL}/api/os`, { method: idEditandoOS ? 'PUT' : 'POST', body: JSON.stringify(d) }); fecharModal('modal-os'); carregarOS(); });
         async function excluirOS(id) { if(confirm("Excluir OS?")) { await fetchComAutenticacao(`${API_URL}/api/os/${id}`, { method: 'DELETE' }); carregarOS(); } }
 
         window.onload = () => {
             const userName = localStorage.getItem('usuarioNome');
-            if(userName) {
-                document.getElementById('user-name').innerText = userName;
-                document.getElementById('user-avatar').innerText = userName.substring(0,2).toUpperCase();
-            }
-            carregarDashboard(); // Inicia pelo Dashboard dinâmico!
+            if(userName) { document.getElementById('user-name').innerText = userName; document.getElementById('user-avatar').innerText = userName.substring(0,2).toUpperCase(); }
+            carregarDashboard();
         }
+
+        // MÁSCARAS
+        const docs = [document.getElementById('c_doc'), document.getElementById('f_doc'), document.getElementById('func_cpf')];
+        docs.forEach(doc => { if(doc) doc.addEventListener('input', function(e) { let v = e.target.value.replace(/\D/g,""); if(v.length <= 11) { v = v.replace(/(\d{3})(\d)/,"$1.$2"); v = v.replace(/(\d{3})(\d)/,"$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); } else { v = v.replace(/^(\d{2})(\d)/,"$1.$2"); v = v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3"); v = v.replace(/\.(\d{3})(\d)/,".$1/$2"); v = v.replace(/(\d{4})(\d)/,"$1-$2"); } e.target.value = v; }); });
+        const mascaraTelefone = (e) => { let v = e.target.value.replace(/\D/g,""); v = v.replace(/^(\d{2})(\d)/g,"($1) $2"); v = v.replace(/(\d)(\d{4})$/,"$1-$2"); e.target.value = v; };
+        ['c_tel', 'c_whats', 'f_tel', 'func_tel'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).addEventListener('input', mascaraTelefone); });
+        ['c_cep', 'func_cep'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).addEventListener('input', function(e) { let v = e.target.value.replace(/\D/g,""); v = v.replace(/(\d{5})(\d)/,"$1-$2"); e.target.value = v; }); });
     </script>
 </body>
 </html>
