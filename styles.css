@@ -181,3 +181,9 @@ td { padding: 18px 24px; border-bottom: 1px solid #f1f5f9; color: var(--text-pri
     align-items: center;
     gap: 5px;
 }
+
+.os-recent-list { display: flex; flex-direction: column; gap: 15px; }
+.os-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.os-card-title { font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 5px;}
+.os-card-sub { font-size: 0.8rem; color: #64748b; display: flex; gap: 15px; }
+.os-card-price { font-weight: 700; font-size: 1.1rem; color: #1e293b; }
